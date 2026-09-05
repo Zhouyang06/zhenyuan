@@ -721,6 +721,11 @@
       if (c && c.photo && Array.isArray(c.photo.gallery) && c.photo.gallery.length) {
         GALLERY = c.photo.gallery.map(normalize);
       }
+      /* 分类页头图（"真愿"上方大图）：管理处可换（content.category.image） */
+      if (c && c.category && c.category.image) {
+        var hero = document.getElementById('cat-hero-img');
+        if (hero && hero.getAttribute('src') !== c.category.image) hero.src = c.category.image;
+      }
     })
     .catch(function () { /* 静默使用默认 */ });
 })();
