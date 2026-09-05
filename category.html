@@ -1,0 +1,118 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sample Reels — ZhenYuan</title>
+  <meta name="description" content="ZhenYuan 作品分类 — Film / Digital">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="css/style.css?v=41">
+</head>
+<body>
+
+  <!-- 开场黑幕：承接首页横杆延伸过场 -->
+  <div id="band-open"><span>Sample Reels</span></div>
+
+  <!-- 液态玻璃导航 -->
+  <header class="nav-wrap">
+    <nav class="nav glass">
+      <a class="nav-logo" href="index.html">ZHENYUAN</a>
+      <div class="nav-right">
+        <a class="nav-link" href="category.html?cat=reels" data-navcat="reels">作品集</a>
+        <a class="nav-link" href="social.html">社交平台</a>
+        <a class="nav-cta" href="menu.html">Menus</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <!-- 顶部大图 + 真愿zhenyuan 标题（图3）+ 分类小字（衔接过场文字） -->
+    <div class="cat-hero">
+      <img id="cat-hero-img" src="images/cat-hero-light.jpg" alt="分类页大图">
+      <div class="cat-titlewrap">
+        <p class="cat-kicker" id="cat-kicker">Sample Reels</p>
+        <h1 class="cat-title">真愿zhenyuan</h1>
+      </div>
+    </div>
+
+    <!-- Film / Digital 液态玻璃分类横杠（点击：方块剥离 → 逐级选择） -->
+    <section class="cat-cats">
+      <div class="cat-bar" data-cat="film" data-img="images/photo.jpg">
+        <div class="cat-media"><img src="images/photo.jpg" alt="Film 分类背景"></div>
+        <div class="cat-glass glass"></div>
+        <span class="cat-bar-name">Film</span>
+        <span class="cat-bar-btn">View</span>
+      </div>
+      <div class="cat-bar" data-cat="digital" data-img="images/philo1.jpg">
+        <div class="cat-media"><img src="images/philo1.jpg" alt="Digital 分类背景"></div>
+        <div class="cat-glass glass"></div>
+        <span class="cat-bar-name">Digital</span>
+        <span class="cat-bar-btn">View</span>
+      </div>
+    </section>
+  </main>
+
+  <!-- 选择器遮罩 / 碎裂圆环舞台 / 作品集画布 / 返回箭头（由 js/category.js 驱动） -->
+  <div class="sel-veil" id="sel-veil"></div>
+  <div class="portfolio-canvas" id="portfolio-canvas"></div>
+  <div class="ring-stage" id="ring-stage"></div>
+  <div class="ring-caption" id="ring-caption"><b></b><span></span></div>
+  <button class="back-arrow" id="back-arrow" type="button" aria-label="返回作品分类">↩</button>
+
+  <footer class="footer">
+    <div class="footer-note reveal">
+      <strong class="footer-brand" data-cid="footer.brand">Verus Votum</strong>
+      <span class="footer-sub" data-cid="footer.note">Haven't seen you for long time</span>
+    </div>
+    <span class="footer-big reveal" style="transition-delay:.12s">zhen<br>yuan</span>
+    <hr class="footer-rule">
+  </footer>
+
+  <script src="js/category.js?v=30"></script>
+  <script>
+    (function () {
+      'use strict';
+      document.body.classList.add('ready'); // 分类页无开屏，直接显示导航
+
+      var q = new URLSearchParams(location.search);
+      var cat = q.get('cat') === 'social' ? 'social' : 'reels';
+      var titles = { reels: 'Sample Reels', social: 'Social Media' };
+      var t = titles[cat];
+      document.title = t + ' — ZhenYuan';
+
+      // 开场黑幕：显示所选横杠文字后上滑揭幕
+      document.getElementById('cat-kicker').textContent = t;
+      var open = document.getElementById('band-open');
+      open.querySelector('span').textContent = t;
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () { open.classList.add('away'); });
+      });
+      setTimeout(function () { open.remove(); }, 1400);
+
+      // 文字可读性检测：大图偏暗时给"真愿zhenyuan"标题加光晕
+      var heroImg = document.getElementById('cat-hero-img');
+      var title = document.querySelector('.cat-title');
+      function glowCheck() {
+        try {
+          if (!heroImg.naturalWidth) return;
+          var c = document.createElement('canvas');
+          c.width = 60; c.height = 60;
+          var ctx = c.getContext('2d');
+          ctx.drawImage(heroImg, 0, heroImg.naturalHeight * 0.55,
+            heroImg.naturalWidth * 0.6, heroImg.naturalHeight * 0.45, 0, 0, 60, 60);
+          var d = ctx.getImageData(0, 0, 60, 60).data;
+          var sum = 0, n = 0;
+          for (var i = 0; i < d.length; i += 4) {
+            sum += 0.2126 * d[i] + 0.7152 * d[i + 1] + 0.0722 * d[i + 2];
+            n++;
+          }
+          if (sum / n < 150) title.classList.add('text-glow');
+          else title.classList.remove('text-glow');
+        } catch (e) { /* 忽略 */ }
+      }
+      if (heroImg.complete && heroImg.naturalWidth) glowCheck();
+      else heroImg.addEventListener('load', glowCheck);
+    })();
+  </script>
+</body>
+</html>

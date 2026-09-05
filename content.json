@@ -1,0 +1,206 @@
+{
+  "nav": {
+    "brand": "ZHENYUAN",
+    "link1": "作品集",
+    "link2": "社交平台",
+    "cta": "Menus"
+  },
+  "hero": {
+    "title": "ZhenYuan",
+    "welcome": "Welcome",
+    "tagline": "True Aspiration for You"
+  },
+  "showcase": {
+    "image": "images/showcase.jpg"
+  },
+  "philosophy": {
+    "word1": "Sensuous",
+    "word2": "Subjective",
+    "note": "Vision Filtered by Feeling",
+    "images": [
+      "images/philo1.jpg",
+      "images/philo2.jpg",
+      "images/philo3.jpg"
+    ]
+  },
+  "studio": {
+    "word": "STUDIO",
+    "location": "X: zhen Y: yuan",
+    "statement": "Photography is an emotional art form\nthat belongs uniquely to the individual."
+  },
+  "coverflow": {
+    "images": [
+      "images/photo.jpg",
+      "images/showcase.jpg",
+      "images/philo1.jpg",
+      "images/philo2.jpg",
+      "images/philo3.jpg"
+    ]
+  },
+  "photo": {
+    "title": "Photography",
+    "gallery": [
+      {
+        "image": "images/photo.jpg",
+        "cat": "film",
+        "film": "Kodak",
+        "camera": "Nikon F3hp",
+        "date": "2026.11.25",
+        "location": "东京",
+        "note": "傍晚的银座，夕阳穿过人群落在石板路上。",
+        "images": [
+          "images/photo.jpg",
+          "images/philo1.jpg",
+          "images/philo3.jpg"
+        ]
+      },
+      {
+        "image": "images/showcase.jpg",
+        "cat": "film",
+        "film": "Ilford HP5",
+        "camera": "Nikon F3hp",
+        "date": "2026.10.02",
+        "location": "上海",
+        "note": "雨后的梧桐道，黑白的颗粒刚刚好。",
+        "images": [
+          "images/showcase.jpg",
+          "images/philo2.jpg"
+        ]
+      },
+      {
+        "image": "images/philo1.jpg",
+        "cat": "film",
+        "film": "Kodak Tri-X",
+        "camera": "Nikon FM2",
+        "date": "2026.08.15",
+        "location": "北京",
+        "note": "胡同里卖冰棍的爷爷，童年的夏天又回来了。",
+        "images": [
+          "images/philo1.jpg",
+          "images/photo.jpg",
+          "images/philo2.jpg"
+        ]
+      },
+      {
+        "image": "images/philo2.jpg",
+        "cat": "film",
+        "film": "Ilford Delta",
+        "camera": "Canon AE-1",
+        "date": "2026.07.20",
+        "location": "京都",
+        "note": "鸭川边的夕凉，蝉鸣还没停。",
+        "images": [
+          "images/philo2.jpg",
+          "images/showcase.jpg",
+          "images/philo3.jpg"
+        ]
+      },
+      {
+        "image": "images/philo3.jpg",
+        "cat": "film",
+        "film": "Fomapan 400",
+        "camera": "Nikon F3hp",
+        "date": "2026.06.11",
+        "location": "布拉格",
+        "note": "红屋顶下的一只白猫，看了镜头很久。",
+        "images": [
+          "images/philo3.jpg",
+          "images/philo1.jpg"
+        ]
+      },
+      {
+        "cat": "film",
+        "film": "Kodak Portar800",
+        "camera": "",
+        "date": "2026.5",
+        "location": "北京",
+        "note": "",
+        "images": [
+          "images/uploads/1788603200196-Portra800__1_-_39_.jpg",
+          "images/uploads/1788603200618-Portra800__2_-_39_.jpg",
+          "images/uploads/1788603201281-Portra800__3_-_39_.jpg",
+          "images/uploads/1788603201645-Portra800__4_-_39_.jpg",
+          "images/uploads/1788603201935-Portra800__5_-_39_.jpg",
+          "images/uploads/1788603202366-Portra800__6_-_39_.jpg",
+          "images/uploads/1788603202644-Portra800__7_-_39_.jpg",
+          "images/uploads/1788603203139-Portra800__8_-_39_.jpg",
+          "images/uploads/1788603203606-Portra800__9_-_39_.jpg",
+          "images/uploads/1788603204249-Portra800__10_-_39_.jpg",
+          "images/uploads/1788603204803-Portra800__11_-_39_.jpg",
+          "images/uploads/1788603205290-Portra800__12_-_39_.jpg",
+          "images/uploads/1788603205573-Portra800__13_-_39_.jpg",
+          "images/uploads/1788603206059-Portra800__14_-_39_.jpg",
+          "images/uploads/1788603206323-Portra800__15_-_39_.jpg",
+          "images/uploads/1788603206575-Portra800__16_-_39_.jpg",
+          "images/uploads/1788603206966-Portra800__17_-_39_.jpg",
+          "images/uploads/1788603207427-Portra800__18_-_39_.jpg",
+          "images/uploads/1788603207871-Portra800__19_-_39_.jpg",
+          "images/uploads/1788603208205-Portra800__20_-_39_.jpg",
+          "images/uploads/1788603208645-Portra800__21_-_39_.jpg",
+          "images/uploads/1788603209055-Portra800__22_-_39_.jpg",
+          "images/uploads/1788603209490-Portra800__23_-_39_.jpg",
+          "images/uploads/1788603209934-Portra800__24_-_39_.jpg",
+          "images/uploads/1788603210423-Portra800__25_-_39_.jpg",
+          "images/uploads/1788603210849-Portra800__26_-_39_.jpg",
+          "images/uploads/1788603211318-Portra800__27_-_39_.jpg",
+          "images/uploads/1788603211660-Portra800__28_-_39_.jpg",
+          "images/uploads/1788603212079-Portra800__29_-_39_.jpg",
+          "images/uploads/1788603212600-Portra800__30_-_39_.jpg",
+          "images/uploads/1788603213006-Portra800__31_-_39_.jpg",
+          "images/uploads/1788603213363-Portra800__32_-_39_.jpg",
+          "images/uploads/1788603213838-Portra800__33_-_39_.jpg",
+          "images/uploads/1788603214170-Portra800__34_-_39_.jpg",
+          "images/uploads/1788603214430-Portra800__35_-_39_.jpg",
+          "images/uploads/1788603214769-Portra800__36_-_39_.jpg",
+          "images/uploads/1788603215099-Portra800__37_-_39_.jpg",
+          "images/uploads/1788603215434-Portra800__38_-_39_.jpg",
+          "images/uploads/1788603215940-Portra800__39_-_39_.jpg"
+        ],
+        "image": "images/uploads/1788603200196-Portra800__1_-_39_.jpg"
+      }
+    ]
+  },
+  "footer": {
+    "brand": "Verus Votum",
+    "note": "Haven't seen you for long time"
+  },
+  "menu": {
+    "title": "Menus",
+    "items": [
+      {
+        "label": "Sample Reels",
+        "sub": "作品集 · Film / Digital",
+        "href": "category.html?cat=reels"
+      },
+      {
+        "label": "Social Media",
+        "sub": "社交平台 · LINK",
+        "href": "social.html"
+      },
+      {
+        "label": "ALL",
+        "sub": "全部作品 · Works",
+        "href": "works.html"
+      }
+    ]
+  },
+  "social": {
+    "title": "LINK",
+    "brandCn": "真愿",
+    "brandEn": "zhenyuan",
+    "statement": "摄影是情绪的艺术，属于每一个独特的个体。\n用镜头记录流动的瞬间，\n让感受成为画面的主角。",
+    "image": "images/showcase.jpg",
+    "links": [
+      {
+        "platform": "抖音",
+        "url": "https://v.douyin.com/cq9xzz0phPs/",
+        "icon": ""
+      },
+      {
+        "platform": "小红书",
+        "url": "https://xhslink.cn/m/6CsOjDNwxU5",
+        "icon": ""
+      }
+    ]
+  }
+}

@@ -1,0 +1,110 @@
+﻿﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZhenYuan — True Aspiration for You</title>
+  <meta name="description" content="ZhenYuan 个人网站 — Sensuous, Subjective.">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="css/style.css?v=41">
+</head>
+<body class="locked">
+
+  <!-- 开屏 Prism 棱镜背景：滚动后渐隐进入页面 -->
+  <div id="intro" aria-hidden="true">
+    <div class="intro-hint">SCROLL</div>
+  </div>
+
+  <!-- 液态玻璃导航 -->
+  <header class="nav-wrap">
+    <nav class="nav glass">
+      <a class="nav-logo" href="#top" data-cid="nav.brand">ZHENYUAN</a>
+      <div class="nav-right">
+        <a class="nav-link" href="category.html?cat=reels" data-cid="nav.link1">作品集</a>
+        <a class="nav-link" href="social.html" data-cid="nav.link2">社交平台</a>
+        <a class="nav-cta" href="menu.html" data-cid="nav.cta">Menus</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="top">
+
+    <!-- Dither 抖动波纹宽幅区（65:24 宽幅，上下留白） -->
+    <section class="dither-band" aria-hidden="true">
+      <div class="dither-frame" id="dither-frame"></div>
+    </section>
+
+    <!-- Hero：超大动态 zhenyuan（FuzzyText 毛玻璃噪点），压在下方图片左上角 -->
+    <section class="hero">
+      <div class="hero-title" id="fuzzy-hero" aria-label="ZhenYuan">ZhenYuan</div>
+    </section>
+
+    <!-- 全宽大图 + 右上小字 + 底部标语 -->
+    <section class="showcase" id="works">
+      <figure class="showcase-figure reveal" data-gradual-blur>
+        <img id="img-showcase" data-cid="showcase.image" alt="封面大图" src="images/showcase.jpg">
+      </figure>
+
+      <p class="hero-tagline">
+        <span data-cid="hero.welcome">Welcome</span>
+        <span data-cid="hero.tagline">True Aspiration for You</span>
+      </p>
+    </section>
+
+    <!-- 理念 -->
+    <section class="philosophy">
+      <div class="reveal">
+        <h2 class="philo-words">
+          <span data-cid="philo.word1">Sensuous</span>
+          <span data-cid="philo.word2">Subjective</span>
+        </h2>
+        <p class="philo-note" data-cid="philo.note">Vision Filtered by Feeling</p>
+      </div>
+      <div class="philo-imgs reveal" id="philo-imgs"></div>
+    </section>
+
+    <!-- STUDIO 水印 -->
+    <section class="studio" id="studio">
+      <div class="studio-watermark reveal" data-cid="studio.word">STUDIO</div>
+      <div class="studio-location reveal" style="transition-delay:.12s" data-cid="studio.location">X: zhen Y: yuan</div>
+      <p class="studio-statement reveal" data-cid="studio.statement">Photography is an emotional art form
+that belongs uniquely to the individual.</p>
+    </section>
+
+    <!-- Photography 区：Cover Flow 作品轮播 -->
+    <section class="photo" id="contact">
+      <div class="photo-head reveal">
+        <span class="photo-title" data-cid="photo.title">Photography</span>
+        <span class="barcode" id="barcode"></span>
+      </div>
+      <div class="coverflow reveal" id="coverflow" style="transition-delay:.1s">
+        <div class="cf-stage" id="cf-stage"></div>
+      </div>
+    </section>
+
+    <!-- Sample Reels / Social Media / ALL：贯穿全屏横杠 -->
+    <section class="bands reveal">
+      <a class="band" href="category.html?cat=reels"><span>Sample Reels</span></a>
+      <a class="band" href="social.html"><span>Social Media</span></a>
+      <a class="band" href="works.html"><span>ALL</span></a>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="footer-note reveal">
+      <strong class="footer-brand" data-cid="footer.brand">Verus Votum</strong>
+      <span class="footer-sub" data-cid="footer.note">Haven't seen you for long time</span>
+    </div>
+    <span class="footer-big reveal" style="transition-delay:.12s">zhen<br>yuan</span>
+    <hr class="footer-rule">
+  </footer>
+
+  <script src="js/fuzzy-text.js?v=3"></script>
+  <script src="js/gradual-blur.js?v=3"></script>
+  <script src="js/prism.js?v=4"></script>
+  <script src="js/intro.js?v=4"></script>
+  <script src="js/dither.js?v=4"></script>
+  <script src="js/main.js?v=13"></script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Works — ZhenYuan</title>
+  <meta name="description" content="ZhenYuan 作品全集">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="css/style.css?v=41">
+</head>
+<body class="works-page locked">
+
+  <!-- 开场：zhenyuan/真愿 急速交替闪动 → 闪白 → Works 浮现 -->
+  <div id="works-intro" aria-hidden="true">
+    <div class="wi-text"><span class="wi-cn">真愿</span><span class="wi-en">zhenyuan</span></div>
+    <div class="wi-flash"></div>
+  </div>
+
+  <!-- 液态玻璃导航（详情态转黑色由 body.works-detail 控制） -->
+  <header class="nav-wrap">
+    <nav class="nav glass">
+      <a class="nav-logo" href="index.html">ZHENYUAN</a>
+      <div class="nav-right">
+        <a class="nav-link" href="category.html?cat=reels">作品集</a>
+        <a class="nav-link" href="social.html">社交平台</a>
+        <a class="nav-cta" href="menu.html">Menus</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Works 大标题（开场后向上浮现到顶部） -->
+    <div class="works-head" id="works-head"><span class="works-title">Works</span><span class="works-comma">,</span></div>
+
+    <!-- 作品流：每行 = 序号 + 横向滚动画廊 + 名称列表（由 js/works.js 渲染） -->
+    <div class="w-rows" id="w-rows"></div>
+  </main>
+
+  <!-- 列表页返回首页（详情画布打开时被盖住自动隐藏） -->
+  <a class="wd-back wd-back-list" href="index.html" title="返回首页" aria-label="返回首页">←</a>
+
+  <!-- 作品详情画布（图2 布局，由 js/works.js 填充） -->
+  <div class="wd-canvas" id="wd-canvas" hidden>
+    <button type="button" class="wd-back" id="wd-back" title="返回作品列表" aria-label="返回作品列表">←</button>
+    <div class="wd-grid">
+      <div class="wd-num" id="wd-num">01</div>
+      <div class="wd-strip" id="wd-strip"><div class="wd-stripinner" id="wd-stripinner"></div></div>
+      <div class="wd-info">
+        <div class="wd-names" id="wd-names"></div>
+        <div class="wd-meta" id="wd-meta"></div>
+      </div>
+      <figure class="wd-big"><img id="wd-bigimg" src="" alt="作品大图"></figure>
+    </div>
+  </div>
+
+  <script src="js/works.js?v=10"></script>
+</body>
+</html>
