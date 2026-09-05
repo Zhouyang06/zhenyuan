@@ -106,7 +106,7 @@
         var j = await r.json().catch(function () { return {}; });
         throw new Error(j.error || ('HTTP ' + r.status));
       }
-      return '已保存！本机服务器已更新，刷新站点页面即可看到。';
+      return '已保存到本机！站点预览立即生效；要同步到线上（GitHub Pages），点"一键发布"。';
     }
     var token = getToken(), repo = getRepo();
     if (!token || !repo) {
@@ -115,6 +115,103 @@
     }
     await putFile(token, repo, CONTENT_PATH, b64Utf8(json), 'update site content via admin');
     return '已保存并发布！GitHub Pages 会在 1-2 分钟内自动更新。';
+  }
+
+  /* ====== 一键发布（本机 → GitHub）：整站代码 + 差量图片 + content.json ====== */
+  /* 站点代码文件（HTML/CSS/JS）：本地最新版 → GitHub，保证线上布局/功能同步 */
+  var SITE_FILES = [
+    'index.html', 'menu.html', 'works.html', 'social.html', 'category.html', 'admin.html',
+    'css/style.css', 'css/admin.css',
+    'js/main.js', 'js/works.js', 'js/category.js', 'js/admin.js', 'js/utif.js',
+    'js/fuzzy-text.js', 'js/intro.js', 'js/prism.js', 'js/dither.js', 'js/gradual-blur.js'
+  ];
+  /* 读本机文件 → base64 */
+  async function fetchLocalB64(path) {
+    var r = await fetch('/' + path, { cache: 'no-store' });
+    if (!r.ok) throw new Error('读本机文件失败：' + path);
+    var blob = await r.blob();
+    return await new Promise(function (res, rej) {
+      var fr = new FileReader();
+      fr.onload = function () { res(String(fr.result).split(',')[1]); };
+      fr.onerror = rej;
+      fr.readAsDataURL(blob);
+    });
+  }
+  /* putFile 包装：内容与线上完全一致时 GitHub 返回 422，视为"已是最新"跳过 */
+  async function putGitHubFile(token, repo, path, contentB64, message) {
+    try {
+      await putFile(token, repo, path, contentB64, message);
+      return true;
+    } catch (e) {
+      if (e.message && /invalid request|identical|same as/i.test(e.message)) return false;
+      throw e;
+    }
+  }
+  /* GitHub 上 images/uploads/ 已有文件名集合（404 = 目录还没建 → 全部待传） */
+  async function ghUploadedNames(token, repo) {
+    var r = await fetch('https://api.github.com/repos/' + repo + '/contents/images/uploads?ref=' + BRANCH,
+      { headers: apiHeaders(token) });
+    if (r.status === 404) return {};
+    if (!r.ok) {
+      var j = await r.json().catch(function () { return {}; });
+      throw new Error(j.message || ('HTTP ' + r.status));
+    }
+    var arr = await r.json();
+    var set = {};
+    (Array.isArray(arr) ? arr : []).forEach(function (it) { if (it.type === 'file') set[it.name] = 1; });
+    return set;
+  }
+  async function publishAll() {
+    var token = getToken(), repo = getRepo();
+    if (!token || !repo) {
+      $('#pub-setup').hidden = false;
+      throw new Error('一键发布需要仓库和 Token（在"发布设置"里填一次即可，本会话内记住）');
+    }
+    /* 1. 整站代码文件（HTML/CSS/JS，小文件先传；内容未变 GitHub 自动跳过） */
+    var codePushed = 0;
+    for (var f = 0; f < SITE_FILES.length; f++) {
+      setStatus('正在发布页面代码…（' + (f + 1) + '/' + SITE_FILES.length + '）' + SITE_FILES[f]);
+      try {
+        if (await putGitHubFile(token, repo, SITE_FILES[f], await fetchLocalB64(SITE_FILES[f]), 'publish site: ' + SITE_FILES[f])) codePushed++;
+      } catch (e) { /* 单文件失败不中断，最后提示重发 */ }
+    }
+    /* 2. 本机图片清单 */
+    var lr = await fetch('/api/list-uploads', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Admin-Key': adminKey() },
+      body: '{}'
+    });
+    if (!lr.ok) throw new Error('读取本机上传清单失败：HTTP ' + lr.status);
+    var localFiles = ((await lr.json()).files) || [];
+    /* 3. 对照 GitHub 已有文件 → 差量（重名跳过，不重复传） */
+    setStatus('正在核对 GitHub 已有文件…');
+    var have = await ghUploadedNames(token, repo);
+    var todo = localFiles.filter(function (p) { return !have[p.split('/').pop()]; });
+    /* 4. 逐张补传（失败不中断，最后汇总；再点一次可续传） */
+    var fail = 0;
+    for (var i = 0; i < todo.length; i++) {
+      setStatus('发布照片中…（' + (i + 1) + '/' + todo.length + '）' + todo[i]);
+      try {
+        await putFile(token, repo, todo[i], await fetchLocalB64(todo[i]), 'publish: ' + todo[i]);
+      } catch (e) { fail++; }
+    }
+    /* 5. 先存本机 content.json，再推 GitHub（内容始终以本机编辑为准） */
+    setStatus('正在发布内容（content.json）…');
+    var json = JSON.stringify(content, null, 2) + '\n';
+    try {
+      await fetch('/api/save-content', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Admin-Key': adminKey() },
+        body: json
+      });
+    } catch (e) { /* 本机保存失败不阻断发布 */ }
+    await putFile(token, repo, CONTENT_PATH, b64Utf8(json), 'update site content via admin');
+    var parts = [];
+    parts.push('页面代码 ' + codePushed + ' 个文件已同步');
+    parts.push(todo.length
+      ? '照片 ' + (todo.length - fail) + '/' + todo.length + ' 张已上传' + (fail ? '（失败 ' + fail + ' 张，网络恢复后再点一次即可续传）' : '')
+      : '照片无新增');
+    return '发布完成：' + parts.join('，') + '。GitHub Pages 1-2 分钟内生效。';
   }
 
   /* ====== 图片上传（本机接口 / GitHub API 双通道），返回相对路径 ====== */
@@ -786,7 +883,8 @@
     ] }
   ];
   var IMAGE_FIELDS = [
-    ['showcase.image', '首页封面大图']
+    ['showcase.image', '首页封面大图'],
+    ['category.image', '分类页头图（"真愿"上方大图）']
   ];
 
   function setPath(cid, v) {
@@ -943,8 +1041,11 @@
   async function enter() {
     $('#gate').style.display = 'none';
     $('#editor').hidden = false;
-    $('#gh-token').value = sessionStorage.getItem('zy_token') || '';
-    $('#gh-repo').value = sessionStorage.getItem('zy_repo') || '';
+    /* 凭证：勾选记住→localStorage（关浏览器仍在），否则只在本次会话 */
+    var remembered = !!localStorage.getItem('zy_token');
+    $('#gh-remember').checked = remembered;
+    $('#gh-token').value = (remembered ? localStorage.getItem('zy_token') : sessionStorage.getItem('zy_token')) || '';
+    $('#gh-repo').value = (remembered ? localStorage.getItem('zy_repo') : sessionStorage.getItem('zy_repo')) || '';
     try {
       var res = await fetch(CONTENT_PATH, { cache: 'no-store' });
       if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -965,6 +1066,7 @@
       content.menu = content.menu || { title: 'Menus', items: [] };
       content.social = content.social || { links: [] };
       content.social.links = Array.isArray(content.social.links) ? content.social.links : [];
+      content.category = content.category || { image: 'images/cat-hero-light.jpg' };
       renderMenu();
       renderSection();
     } catch (err) {
@@ -974,12 +1076,22 @@
 
   if (sessionStorage.getItem('zy_admin') === '1') enter();
 
-  $('#gh-token').addEventListener('input', function () {
-    sessionStorage.setItem('zy_token', this.value.trim());
-  });
-  $('#gh-repo').addEventListener('input', function () {
-    sessionStorage.setItem('zy_repo', this.value.trim());
-  });
+  /* 凭证保存：勾选"记住"→ localStorage（持久）；否则 → sessionStorage（关页即清） */
+  function saveCreds() {
+    var tok = $('#gh-token').value.trim(), repo = $('#gh-repo').value.trim();
+    if ($('#gh-remember').checked) {
+      localStorage.setItem('zy_token', tok);
+      localStorage.setItem('zy_repo', repo);
+    } else {
+      localStorage.removeItem('zy_token');
+      localStorage.removeItem('zy_repo');
+      sessionStorage.setItem('zy_token', tok);
+      sessionStorage.setItem('zy_repo', repo);
+    }
+  }
+  $('#gh-token').addEventListener('input', saveCreds);
+  $('#gh-repo').addEventListener('input', saveCreds);
+  $('#gh-remember').addEventListener('change', saveCreds);
   $('#pub-toggle').addEventListener('click', function () {
     var p = $('#pub-setup');
     p.hidden = !p.hidden;
@@ -993,6 +1105,21 @@
       setStatus(msg);
     } catch (err) {
       setStatus('保存失败：' + err.message);
+    }
+  });
+
+  /* ====== 一键发布（仅本机显示：差量上传新图片 + 推送 content.json 到 GitHub） ====== */
+  if (!IS_LOCAL) $('#publish-btn').style.display = 'none';
+  $('#publish-btn').addEventListener('click', async function () {
+    var btn = this;
+    btn.disabled = true;
+    try {
+      var msg = await publishAll();
+      setStatus(msg);
+    } catch (err) {
+      setStatus('发布失败：' + err.message);
+    } finally {
+      btn.disabled = false;
     }
   });
 })();
