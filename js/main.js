@@ -207,6 +207,69 @@
     };
   }
 
+  /* ===== 正方形拼版：n 张照片拼成整体正方形，方块大小错落但不悬殊，并做错位摆放 =====
+     G×G 单位网格；铺块只用 2×2（中方）与 1×1（小方），边长比最大 2:1，不出现过于庞大的单图；
+     n≡2(mod 3) 无法纯方块拼方时补极少量 2×1/1×2 矩形。中块与矩形落点随机、横竖随机、图序打散，
+     渲染时再给每块轻微转角与位移，形成手工拼贴感而非整齐表格。 */
+  function solveSquare(n, rnd) {
+    rnd = rnd || Math.random;
+    function shuffled(len) {
+      var a = [];
+      for (var i = 0; i < len; i++) a.push(i);
+      for (var j = len - 1; j > 0; j--) { var k = Math.floor(rnd() * (j + 1)); var tmp = a[j]; a[j] = a[k]; a[k] = tmp; }
+      return a;
+    }
+    function spot(occ, G, w, h) {
+      var ys = shuffled(G - h + 1), xs = shuffled(G - w + 1);
+      for (var yi = 0; yi < ys.length; yi++)
+        for (var xi = 0; xi < xs.length; xi++) {
+          var y = ys[yi], x = xs[xi], ok = true;
+          for (var dy = 0; dy < h && ok; dy++)
+            for (var dx = 0; dx < w; dx++)
+              if (occ[y + dy][x + dx]) { ok = false; break; }
+          if (ok) return { x: x, y: y };
+        }
+      return null;
+    }
+    function mark(occ, q, w, h) {
+      for (var dy = 0; dy < h; dy++)
+        for (var dx = 0; dx < w; dx++) occ[q.y + dy][q.x + dx] = true;
+    }
+    for (var G = 2; G <= 6; G++) {
+      var D = G * G - n;
+      if (D < 0) continue;
+      var r1 = D % 3;                 /* 矩形数量（0~2 消化余数） */
+      var b2 = (D - r1) / 3;          /* 2×2 中方块数量 */
+      if (4 * b2 + 2 * r1 > G * G || b2 + r1 > n) continue;
+      var occ = [], tiles = [], i, q, okAll = true;
+      for (i = 0; i < G; i++) occ.push(new Array(G).fill(false));
+      for (i = 0; i < b2; i++) {
+        q = spot(occ, G, 2, 2);
+        if (!q) { okAll = false; break; }
+        mark(occ, q, 2, 2); tiles.push({ x: q.x, y: q.y, s: 2 });
+      }
+      if (!okAll) continue;
+      for (i = 0; i < r1; i++) {
+        var hor = rnd() < 0.5;
+        q = spot(occ, G, hor ? 2 : 1, hor ? 1 : 2);
+        if (!q) q = spot(occ, G, hor ? 1 : 2, hor ? 2 : 1);
+        if (!q) { okAll = false; break; }
+        var rw = hor ? 2 : 1, rh = hor ? 1 : 2;
+        mark(occ, q, rw, rh); tiles.push({ x: q.x, y: q.y, w: rw, h: rh });
+      }
+      if (!okAll) continue;
+      for (var y = 0; y < G; y++)
+        for (var x = 0; x < G; x++)
+          if (!occ[y][x]) tiles.push({ x: x, y: y, s: 1 });
+      if (tiles.length === n) {
+        for (var z = tiles.length - 1; z > 0; z--) { var kk = Math.floor(rnd() * (z + 1)); var tt = tiles[z]; tiles[z] = tiles[kk]; tiles[kk] = tt; }
+        return { G: G, tiles: tiles };
+      }
+    }
+    return { G: 1, tiles: [{ x: 0, y: 0, s: 1 }] };
+  }
+  if (typeof window !== "undefined") window.__philoLayout = solveSquare;  /* 测试钩子 */
+
   function initPhiloMosaic(content) {
     var box = document.getElementById('philo-imgs');
     if (!box) return;
@@ -223,23 +286,19 @@
     }
     if (!imgs.length) imgs = ['images/philo1.jpg', 'images/philo2.jpg', 'images/philo3.jpg'];
 
-    var rnd = mulberry32(0x9E3779B9);
+    var layRnd = mulberry32((0x9E3779B9 ^ (imgs.length * 2654435761)) >>> 0);
+    var lay = solveSquare(imgs.length, layRnd);
     box.innerHTML = '';
-    imgs.forEach(function (src, i) {
+    box.style.gridTemplateColumns = 'repeat(' + lay.G + ',1fr)';
+    box.style.gridTemplateRows = 'repeat(' + lay.G + ',1fr)';
+    lay.tiles.forEach(function (t, i) {
       var fig = document.createElement('figure');
       fig.className = 'pi-tile';
-      var cs = 1, rs = 1;
-      if (i === 0) { cs = 2; rs = 2; }                    /* 首图大展位 */
-      else if (imgs.length >= 4) {                        /* 图多时再随机加大格，少图时严丝合缝不留洞 */
-        var r = rnd();
-        if (r < 0.15) { cs = 2; rs = 2; }
-        else if (r < 0.40) { cs = 2; rs = 1; }
-        else if (r < 0.58) { cs = 1; rs = 2; }
-      }
-      fig.style.gridColumn = 'span ' + cs;
-      fig.style.gridRow = 'span ' + rs;
-      fig.style.setProperty('--ti', i);   /* 入场错落延迟（CSS .philo-imgs.in .pi-tile） */
-      fig.innerHTML = '<img src="' + src + '" alt="理念配图 ' + (i + 1) + '" loading="lazy">';
+      var w = t.w || t.s, h = t.h || t.s;
+      fig.style.gridColumn = (t.x + 1) + ' / span ' + w;
+      fig.style.gridRow = (t.y + 1) + ' / span ' + h;
+      fig.style.setProperty('--ti', i);
+      fig.innerHTML = '<img src="' + imgs[i] + '" alt="理念配图 ' + (i + 1) + '" loading="lazy">';
       box.appendChild(fig);
     });
   }
