@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex, nofollow">
   <title>管理处 — ZhenYuan</title>
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="css/admin.css?v=5">
+  <link rel="stylesheet" href="css/admin.css?v=6">
 </head>
 <body class="admin-body">
 
@@ -33,6 +33,7 @@
         <a href="works.html" target="_blank">作品</a>
         <a href="social.html" target="_blank">社交平台</a>
         <a href="javascript:void 0" id="pub-toggle">发布设置</a>
+        <button id="publish-btn" class="admin-publish" title="把本机新上传的照片和内容差量同步到 GitHub Pages">一键发布</button>
         <button id="save-btn" class="admin-save">保存并发布</button>
       </div>
     </nav>
@@ -41,8 +42,9 @@
     <div id="pub-setup" class="pub-setup" hidden>
       <label class="field"><span class="field-key">仓库（用户名/仓库名）</span>
         <input type="text" id="gh-repo" placeholder="例如：zhenyuan/zhenyuan.github.io"></label>
-      <label class="field"><span class="field-key">GitHub Token（仅本次会话，不落盘）</span>
+      <label class="field"><span class="field-key">GitHub Token</span>
         <input type="password" id="gh-token" placeholder="ghp_…（需要 Contents 读写权限）"></label>
+        <label class="pub-remember"><input type="checkbox" id="gh-remember"> 在此电脑记住仓库和 Token（勾选后关浏览器也不用重填；仅私人电脑使用，公用电脑请勿勾）</label>
       <p class="pub-hint">本机预览（127.0.0.1）自动使用本地保存接口，无需填写；部署到 GitHub Pages 后，保存与上传走 GitHub API，需要填写以上两项。</p>
     </div>
 
@@ -57,6 +59,6 @@
   </div>
 
   <script src="js/utif.js?v=1"></script>
-  <script src="js/admin.js?v=8"></script>
+  <script src="js/admin.js?v=11"></script>
 </body>
 </html>
