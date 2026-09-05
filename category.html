@@ -68,7 +68,7 @@
     <hr class="footer-rule">
   </footer>
 
-  <script src="js/category.js?v=30"></script>
+  <script src="js/category.js?v=31"></script>
   <script>
     (function () {
       'use strict';
@@ -111,7 +111,8 @@
         } catch (e) { /* 忽略 */ }
       }
       if (heroImg.complete && heroImg.naturalWidth) glowCheck();
-      else heroImg.addEventListener('load', glowCheck);
+      /* 头图可能被 category.js 按 content.json 异步替换：每次重新加载都重测明暗 */
+      heroImg.addEventListener('load', glowCheck);
     })();
   </script>
 </body>
