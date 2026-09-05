@@ -82,7 +82,8 @@ body.ready .hero-title{opacity:1;transform:none}
 .showcase-figure{position:relative;height:92vh}
 
 /* ================= Philosophy ================= */
-.philosophy{max-width:var(--maxw);margin:0 auto;padding:16vh 22px 6vh;display:flex;gap:8vw;align-items:flex-start}
+.philosophy{max-width:none;margin:0;padding:16vh 0 6vh;display:flex;align-items:center;gap:clamp(24px,3.2vw,52px)}
+.philosophy>.reveal:not(.philo-imgs){flex:0 0 auto;width:clamp(250px,27vw,400px);margin-left:max(22px,calc((100vw - var(--maxw))/2 + 22px))}
 /* philosophy 区 .reveal 只做 IO 触发器，不做整体过渡——让子元素（philo-words span / philo-note）的错落动画可见 */
 .philosophy .reveal{opacity:1;transform:none;transition:none}
 .philo-words{font-family:var(--serif);font-size:clamp(36px,4.5vw,52px);font-weight:700;letter-spacing:-.02em;line-height:1.25}
@@ -92,11 +93,10 @@ body.ready .hero-title{opacity:1;transform:none}
 .philo-note{font-size:13px;color:var(--muted);margin-top:18px;opacity:0}
 .reveal.in .philo-note{animation:textRise .8s cubic-bezier(.16,1,.3,1) .26s both}
 /* 理念照片展示柜：按上传数量密铺，大小不一（与作品集 mosaic 同语言） */
-.philo-imgs{flex:1;display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:118px;
-  grid-auto-flow:dense;gap:12px}
+.philo-imgs{flex:1 1 auto;min-width:0;aspect-ratio:1/1;display:grid;gap:8px;align-self:center;overflow:hidden}
 .pi-tile{position:relative;margin:0;overflow:hidden;background:#e9e9ee;
   box-shadow:0 10px 26px rgba(17,17,20,.14);opacity:0}
-.pi-tile img{width:100%;height:100%;object-fit:cover;display:block;
+.pi-tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;
   transition:transform .8s cubic-bezier(.16,1,.3,1)}
 .pi-tile:hover img{transform:scale(1.05)}
 /* 理念瓦片：容器进入视口后错落浮起 */
@@ -482,8 +482,9 @@ body.portfolio-show main{display:none}
 @media (max-width:860px){
   .nav-link{display:none}
   .hero{padding-top:44px}
-  .philosophy{flex-direction:column;gap:40px;padding-top:12vh}
-  .philo-imgs{width:100%;grid-template-columns:repeat(2,1fr);grid-auto-rows:132px;gap:10px}
+  .philosophy{flex-direction:column;gap:34px;padding:12vh 0 4vh}
+  .philosophy>.reveal:not(.philo-imgs){width:auto;margin:0 22px}
+  .philo-imgs{width:100%;flex:none;gap:6px}
   .studio-location{position:static;display:block;margin-top:16px}
   .studio-statement{position:static;transform:none;margin-top:18px;max-width:100%}
   .cf-stage{height:44vh}
