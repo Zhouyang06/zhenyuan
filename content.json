@@ -10,17 +10,22 @@
     "welcome": "Welcome",
     "tagline": "True Aspiration for You"
   },
+  "category": {
+    "image": "images/uploads/1788629138643-ProImage100-9.jpg"
+  },
   "showcase": {
-    "image": "images/showcase.jpg"
+    "image": "images/uploads/1788629132755-ProImage100-34.jpg"
   },
   "philosophy": {
     "word1": "Sensuous",
     "word2": "Subjective",
     "note": "Vision Filtered by Feeling",
     "images": [
-      "images/philo1.jpg",
-      "images/philo2.jpg",
-      "images/philo3.jpg"
+      "images/uploads/1788614300736-000236020004.jpg",
+      "images/uploads/1788613323187-ProImage100-4.jpg",
+      "images/uploads/1788613823815-Kodak_5207-4.jpg",
+      "images/uploads/1788613860849-Kodak_5207-15.jpg",
+      "images/uploads/1788614040153-5219-13.jpg"
     ]
   },
   "studio": {
@@ -30,11 +35,16 @@
   },
   "coverflow": {
     "images": [
-      "images/photo.jpg",
-      "images/showcase.jpg",
-      "images/philo1.jpg",
-      "images/philo2.jpg",
-      "images/philo3.jpg"
+      "images/uploads/1788613867836-Kodak_5207-16.jpg",
+      "images/uploads/1788613708139-PhonenixII__1_-_1_-2.jpg",
+      "images/uploads/1788614172776-Ektar__1_-_1_-5.jpg",
+      "images/uploads/1788614229435-000022.jpg",
+      "images/uploads/1788614431812-Portra800__19_-_39_.jpg",
+      "images/uploads/1788614035664-5219-1.jpg",
+      "images/uploads/1788614072217-5219-27.jpg",
+      "images/uploads/1788614293524-000002.jpg",
+      "images/uploads/1788629132755-ProImage100-34.jpg",
+      "images/uploads/1788614432595-Portra800__24_-_39_.jpg"
     ]
   },
   "photo": {
@@ -42,24 +52,186 @@
     "gallery": [
       {
         "cat": "film",
-        "film": "新胶卷",
-        "camera": "Nikon F3 HP",
+        "film": "Kodak ProImage100",
+        "camera": "",
+        "date": "2026.7",
+        "location": "湖南",
+        "note": "ProImage100色彩是独一档的淡雅对于人像的表现力可谓一绝是十分适合拍摄低饱和色彩和人像的",
+        "images": [
+          "images/uploads/1788613325248-ProImage100-34.jpg",
+          "images/uploads/1788613323187-ProImage100-4.jpg",
+          "images/uploads/1788613323722-ProImage100-9.jpg",
+          "images/uploads/1788613324117-ProImage100-29.jpg",
+          "images/uploads/1788613324878-ProImage100-33.jpg",
+          "images/uploads/1788613324528-ProImage100-31.jpg"
+        ],
+        "image": "images/uploads/1788613325248-ProImage100-34.jpg"
+      },
+      {
+        "cat": "film",
+        "film": "FujiFilm C200",
+        "camera": "",
+        "date": "2025.10",
+        "location": "四川",
+        "note": "FujiFilm C200表现出一脉相承的“富士绿”",
+        "images": [
+          "images/uploads/1788613526237-000021100010.jpg",
+          "images/uploads/1788613521816-000021090023.jpg",
+          "images/uploads/1788613529889-000021100026.jpg",
+          "images/uploads/1788613522745-000021090024.jpg",
+          "images/uploads/1788613528098-000021100011.jpg",
+          "images/uploads/1788613524592-000021100007.jpg",
+          "images/uploads/1788613530653-000021100030.jpg",
+          "images/uploads/1788613531298-000021100032.jpg"
+        ],
+        "image": "images/uploads/1788613526237-000021100010.jpg"
+      },
+      {
+        "cat": "film",
+        "film": "Harman Phonenix II",
+        "camera": "",
         "date": "2026.5",
         "location": "北京",
-        "note": "Portra800高宽容度和独特柔和的色调让夏天的北京似乎远没有想象中的那样炎热",
+        "note": "PhonenixII 出圈于独特的高光表现和色彩，在特定环境下寻找光线处拍摄能营造出十分有惊喜的效果",
         "images": [
-          "images/uploads/1788612204503-Portra800__1_-_39_.jpg",
-          "images/uploads/1788612209053-Portra800__2_-_39_.jpg",
-          "images/uploads/1788612213103-Portra800__3_-_39_.jpg",
-          "images/uploads/1788612216875-Portra800__18_-_39_.jpg",
-          "images/uploads/1788612221020-Portra800__19_-_39_.jpg",
-          "images/uploads/1788612225632-Portra800__20_-_39_.jpg",
-          "images/uploads/1788612229964-Portra800__24_-_39_.jpg",
-          "images/uploads/1788612233897-Portra800__28_-_39_.jpg",
-          "images/uploads/1788612238239-Portra800__29_-_39_.jpg",
-          "images/uploads/1788612242275-Portra800__32_-_39_.jpg"
+          "images/uploads/1788613708139-PhonenixII__1_-_1_-2.jpg",
+          "images/uploads/1788613707701-PhonenixII__1_-_1_.jpg",
+          "images/uploads/1788613683101-000315870030.jpg",
+          "images/uploads/1788613684740-000315870031.jpg",
+          "images/uploads/1788613688079-000315870034.jpg",
+          "images/uploads/1788613689452-phoenixII-1.jpg",
+          "images/uploads/1788613686431-000315870032.jpg",
+          "images/uploads/1788613697876-phoenixII-1-3.jpg",
+          "images/uploads/1788613696504-phoenixII-1-2.jpg",
+          "images/uploads/1788613704939-phoenixII-1-4.jpg"
         ],
-        "image": "images/uploads/1788612204503-Portra800__1_-_39_.jpg"
+        "image": "images/uploads/1788613708139-PhonenixII__1_-_1_-2.jpg"
+      },
+      {
+        "cat": "film",
+        "film": "Kodak 5207 250D",
+        "camera": "",
+        "date": "2026.5",
+        "location": "北京",
+        "note": "最厉害的日光卷色彩温暖清晰度佳在日光下的表现力十分出彩",
+        "images": [
+          "images/uploads/1788613867836-Kodak_5207-16.jpg",
+          "images/uploads/1788613814831-Kodak_5207-2.jpg",
+          "images/uploads/1788613823815-Kodak_5207-4.jpg",
+          "images/uploads/1788613846880-Kodak_5207-12.jpg",
+          "images/uploads/1788613825468-Kodak_5207-5.jpg",
+          "images/uploads/1788613825505-Kodak_5207-6.jpg",
+          "images/uploads/1788613825916-Kodak_5207-8.jpg",
+          "images/uploads/1788613832934-Kodak_5207-9.jpg",
+          "images/uploads/1788613839905-Kodak_5207-11.jpg",
+          "images/uploads/1788613853852-Kodak_5207-14.jpg",
+          "images/uploads/1788613860849-Kodak_5207-15.jpg",
+          "images/uploads/1788613869115-Kodak_5207-18.jpg",
+          "images/uploads/1788613876133-Kodak_5207-20.jpg"
+        ],
+        "image": "images/uploads/1788613867836-Kodak_5207-16.jpg"
+      },
+      {
+        "cat": "film",
+        "film": "Kodak 5219 500T",
+        "camera": "",
+        "date": "2026.8",
+        "location": "",
+        "note": "独特的哈苏蓝 在不同环境下适时调整感光度特别在日光下使用iso200能达到暖中带蓝的效果",
+        "images": [
+          "images/uploads/1788614050993-5219-21.jpg",
+          "images/uploads/1788614043980-5219-18.jpg",
+          "images/uploads/1788614035664-5219-1.jpg",
+          "images/uploads/1788614079182-5219-29.jpg",
+          "images/uploads/1788614035925-5219-11.jpg",
+          "images/uploads/1788614040153-5219-13.jpg",
+          "images/uploads/1788614057984-5219-23.jpg",
+          "images/uploads/1788614065247-5219-26.jpg",
+          "images/uploads/1788614072217-5219-27.jpg",
+          "images/uploads/1788614086180-5219-35.jpg"
+        ],
+        "image": "images/uploads/1788614050993-5219-21.jpg"
+      },
+      {
+        "cat": "film",
+        "film": "Kodak Ektar100",
+        "camera": "",
+        "date": "2026.5",
+        "location": "北京",
+        "note": "柯达Ektar100的颜色似乎会呈现出偏红的色调,在特定场景下可以营造出对比度较高的整体表现",
+        "images": [
+          "images/uploads/1788614172776-Ektar__1_-_1_-5.jpg",
+          "images/uploads/1788614166475-000315880005.jpg",
+          "images/uploads/1788614167326-000315880014.jpg",
+          "images/uploads/1788614168202-Ektar__1_-_1_.jpg",
+          "images/uploads/1788614168531-Ektar__1_-_1_-3.jpg",
+          "images/uploads/1788614172461-Ektar__1_-_1_-4.jpg"
+        ],
+        "image": "images/uploads/1788614172776-Ektar__1_-_1_-5.jpg"
+      },
+      {
+        "cat": "film",
+        "film": "Kodak Gold200",
+        "camera": "",
+        "date": "2026.5",
+        "location": "北京",
+        "note": "",
+        "images": [
+          "images/uploads/1788614229435-000022.jpg",
+          "images/uploads/1788614217558-000006.jpg",
+          "images/uploads/1788614218300-000007.jpg",
+          "images/uploads/1788614218931-000008.jpg",
+          "images/uploads/1788614221514-000011.jpg",
+          "images/uploads/1788614221849-000016.jpg",
+          "images/uploads/1788614223220-000018.jpg",
+          "images/uploads/1788614229093-000020.jpg",
+          "images/uploads/1788614229762-000034.jpg",
+          "images/uploads/1788614230071-000035.jpg"
+        ],
+        "image": "images/uploads/1788614229435-000022.jpg"
+      },
+      {
+        "cat": "film",
+        "film": "Kodak UltraMax 400",
+        "camera": "",
+        "date": "2026.5",
+        "location": "湖南",
+        "note": "柯达全能400当之无愧的全能型选手,在各个条件与环境下能保持较好的色彩表现,不知道用什么胶卷的平价优选",
+        "images": [
+          "images/uploads/1788614293524-000002.jpg",
+          "images/uploads/1788614294251-000003.jpg",
+          "images/uploads/1788614294592-000009.jpg",
+          "images/uploads/1788614295898-000013.jpg",
+          "images/uploads/1788614296197-000016.jpg",
+          "images/uploads/1788614297549-000024.jpg",
+          "images/uploads/1788614297879-000025.jpg",
+          "images/uploads/1788614298192-000030.jpg",
+          "images/uploads/1788614299656-000236020002.jpg",
+          "images/uploads/1788614300736-000236020004.jpg",
+          "images/uploads/1788614302839-000236020026.jpg"
+        ],
+        "image": "images/uploads/1788614293524-000002.jpg"
+      },
+      {
+        "cat": "film",
+        "film": "Kodak Protra800",
+        "camera": "",
+        "date": "2026.5",
+        "location": "北京",
+        "note": "Portra 800 的高宽容和柔和的颜色让北京似乎不那么炎热了",
+        "images": [
+          "images/uploads/1788614430795-Portra800__3_-_39_.jpg",
+          "images/uploads/1788614430177-Portra800__1_-_39_.jpg",
+          "images/uploads/1788614430489-Portra800__2_-_39_.jpg",
+          "images/uploads/1788614431118-Portra800__18_-_39_.jpg",
+          "images/uploads/1788614431812-Portra800__19_-_39_.jpg",
+          "images/uploads/1788614432187-Portra800__20_-_39_.jpg",
+          "images/uploads/1788614432595-Portra800__24_-_39_.jpg",
+          "images/uploads/1788614432962-Portra800__28_-_39_.jpg",
+          "images/uploads/1788614436532-Portra800__29_-_39_.jpg",
+          "images/uploads/1788614438235-Portra800__32_-_39_.jpg"
+        ],
+        "image": "images/uploads/1788614430795-Portra800__3_-_39_.jpg"
       }
     ]
   },
@@ -91,8 +263,8 @@
     "title": "LINK",
     "brandCn": "真愿",
     "brandEn": "zhenyuan",
-    "statement": "摄影是情绪的艺术，属于每一个独特的个体。\n用镜头记录流动的瞬间，\n让感受成为画面的主角。",
-    "image": "images/showcase.jpg",
+    "statement": "",
+    "image": "images/uploads/1788614692858-ProImage100-29.jpg",
     "links": [
       {
         "platform": "抖音",
