@@ -52,7 +52,9 @@
   function setStatus(msg) { $('#status').textContent = msg; }
   function getRepo() { return $('#gh-repo').value.trim(); }
   function getToken() { return $('#gh-token').value.trim(); }
-  function adminKey() { return sessionStorage.getItem('zy_key') || ''; }
+  /* 本机接口密钥=管理密码哈希。该哈希本就硬编码在本文件、且接口只监听 127.0.0.1，
+     故 sessionStorage 丢失时回退到常量，保证任何登录状态下本机保存/代理请求都不会被 403 拒绝。 */
+  function adminKey() { return sessionStorage.getItem('zy_key') || PASSWORD_HASH; }
 
   /* ====== 面包屑 ====== */
   function setCrumb(parts) {
@@ -75,14 +77,43 @@
   function apiHeaders(token) {
     return { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' };
   }
+  /* 网络抖动重试：手机热点下 fetch 偶发 "Failed to fetch"，自动重连最多 4 次（指数退避 0.6/1.2/2.4/4s）。
+     HTTP 4xx（权限/参数错误）不重试，直接返回让上层报错；只对断连/超时/5xx 重试。 */
+  function sleep(ms) { return new Promise(function (res) { setTimeout(res, ms); }); }
+  async function fetchRetry(url, opts, tries) {
+    tries = tries || 4;
+    var lastErr;
+    for (var i = 0; i < tries; i++) {
+      try {
+        var r = await fetch(url, opts);
+        if (r.ok || (r.status >= 400 && r.status < 500 && r.status !== 429)) return r;
+        lastErr = new Error('HTTP ' + r.status + ' ' + r.statusText);
+        lastErr.status = r.status;
+        lastErr.resp = r;
+      } catch (e) { lastErr = e; }   /* TypeError: Failed to fetch 等断连 */
+      if (i < tries - 1) await sleep(600 * Math.pow(2, i) + Math.floor(Math.random() * 300));
+    }
+    throw lastErr;
+  }
   async function putFile(token, repo, path, contentB64, message) {
+    /* 本机模式：走本地反向代理（127.0.0.1），浏览器不直连 GitHub，绕开加速器/热点对 api.github.com 的劫持 */
+    if (IS_LOCAL) {
+      var pr = await fetchRetry('/api/gh-put', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Admin-Key': adminKey() },
+        body: JSON.stringify({ token: token, repo: repo, path: path, b64: contentB64, message: message })
+      });
+      var pj = await pr.json();
+      if (!pj.ok) throw new Error(pj.error || pj.message || ('HTTP ' + (pj.status || '未知')));
+      return;
+    }
     var sha;
-    var g = await fetch('https://api.github.com/repos/' + repo + '/contents/' + path + '?ref=' + BRANCH,
+    var g = await fetchRetry('https://api.github.com/repos/' + repo + '/contents/' + path + '?ref=' + BRANCH,
       { headers: apiHeaders(token) });
     if (g.ok) { sha = (await g.json()).sha; }
     var body = { message: message, content: contentB64, branch: BRANCH };
     if (sha) body.sha = sha;
-    var r = await fetch('https://api.github.com/repos/' + repo + '/contents/' + path, {
+    var r = await fetchRetry('https://api.github.com/repos/' + repo + '/contents/' + path, {
       method: 'PUT',
       headers: Object.assign(apiHeaders(token), { 'Content-Type': 'application/json' }),
       body: JSON.stringify(body)
@@ -123,7 +154,7 @@
     'index.html', 'menu.html', 'works.html', 'social.html', 'category.html', 'admin.html',
     'css/style.css', 'css/admin.css',
     'js/main.js', 'js/works.js', 'js/category.js', 'js/admin.js', 'js/utif.js',
-    'js/fuzzy-text.js', 'js/intro.js', 'js/prism.js', 'js/dither.js', 'js/gradual-blur.js'
+    'js/fuzzy-text.js', 'js/intro.js', 'js/prism.js', 'js/dither.js', 'js/gradual-blur.js', 'js/counter.js'
   ];
   /* 读本机文件 → base64 */
   async function fetchLocalB64(path) {
@@ -147,9 +178,21 @@
       throw e;
     }
   }
-  /* GitHub 上 images/uploads/ 已有文件名集合（404 = 目录还没建 → 全部待传） */
+  /* GitHub 上 images/uploads/ 已有文件名集合（404 = 目录还没建 → 全部待传）。本机走本地代理，热点抖动自动重试。 */
   async function ghUploadedNames(token, repo) {
-    var r = await fetch('https://api.github.com/repos/' + repo + '/contents/images/uploads?ref=' + BRANCH,
+    if (IS_LOCAL) {
+      var lr = await fetchRetry('/api/gh-list', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Admin-Key': adminKey() },
+        body: JSON.stringify({ token: token, repo: repo, dir: 'images/uploads' })
+      });
+      var lj = await lr.json();
+      if (!lj.ok) throw new Error(lj.error || lj.message || ('HTTP ' + (lj.status || '未知')));
+      var lset = {};
+      (lj.names || []).forEach(function (n) { lset[n] = 1; });
+      return lset;
+    }
+    var r = await fetchRetry('https://api.github.com/repos/' + repo + '/contents/images/uploads?ref=' + BRANCH,
       { headers: apiHeaders(token) });
     if (r.status === 404) return {};
     if (!r.ok) {
@@ -1117,7 +1160,11 @@
       var msg = await publishAll();
       setStatus(msg);
     } catch (err) {
-      setStatus('发布失败：' + err.message);
+      var em = String(err && err.message || err);
+      if (/Failed to fetch|NetworkError|load failed|network/i.test(em)) {
+        em = '网络连接中断（手机热点不稳定）。已自动重试多次仍失败，请稍等片刻再点一次“一键发布”，已传好的文件会自动跳过、只补传没成功的。';
+      }
+      setStatus('发布失败：' + em);
     } finally {
       btn.disabled = false;
     }
