@@ -347,8 +347,11 @@
       var a = document.createElement('a');
       a.className = 'social-link';
       a.href = lk.url || '#';
-      a.target = '_blank';
-      a.rel = 'noopener';
+      /* mailto: 邮箱直接唤起访客的邮件应用，不新开空白标签页；外链才新开 */
+      if (!/^mailto:/i.test(lk.url || '')) {
+        a.target = '_blank';
+        a.rel = 'noopener';
+      }
       a.style.animationDelay = (0.05 + box.children.length * 0.13).toFixed(2) + 's'; /* 链接条错落入场 */
       var icon = document.createElement('span');
       icon.className = 'social-link-icon';
