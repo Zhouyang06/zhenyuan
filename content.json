@@ -21,11 +21,11 @@
     "word2": "Subjective",
     "note": "Vision Filtered by Feeling",
     "images": [
-      "images/uploads/1788614300736-000236020004.jpg",
       "images/uploads/1788613323187-ProImage100-4.jpg",
       "images/uploads/1788613823815-Kodak_5207-4.jpg",
       "images/uploads/1788613860849-Kodak_5207-15.jpg",
-      "images/uploads/1789832680991-Premium400-25.jpg"
+      "images/uploads/1789832680991-Premium400-25.jpg",
+      "images/uploads/1788613846880-Kodak_5207-12.jpg"
     ]
   },
   "studio": {
@@ -297,6 +297,11 @@
       {
         "platform": "小红书",
         "url": "https://xhslink.cn/m/6CsOjDNwxU5",
+        "icon": ""
+      },
+      {
+        "platform": "邮箱",
+        "url": "mailto:zhouyuan1025@gmail.com?subject=%E6%9D%A5%E8%87%AA%20ZhenYuan%20%E7%BD%91%E7%AB%99%E7%9A%84%E6%B6%88%E6%81%AF",
         "icon": ""
       }
     ]
