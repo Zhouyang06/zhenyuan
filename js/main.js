@@ -95,7 +95,8 @@
       var d = document.createElement('div');
       d.className = 'cf-item';
       var img = document.createElement('img');
-      img.src = src;
+      img.setAttribute('data-src', src);   /* 按需加载：layout 时只给当前及相邻卡设 src，避免首屏拉全部图 */
+      img.decoding = 'async';
       img.alt = '';
       d.appendChild(img);
       stage.appendChild(d);
@@ -130,6 +131,12 @@
         s.style.opacity = String(op);
         s.style.pointerEvents = op === 0 ? 'none' : 'auto';
         s.style.transform = 'translate(-50%,-50%) translateX(' + x + 'px) rotateY(' + rot + 'deg) scale(' + sc + ')';
+        /* 仅加载当前卡 ±2 范围内的图（其余轮播靠近时再加载），显著减少首屏图片流量 */
+        var im = s.querySelector('img');
+        if (im && !im.src && ao <= 2) {
+          var ds = im.getAttribute('data-src');
+          if (ds) im.src = ds;
+        }
       });
     }
 
@@ -298,7 +305,7 @@
       fig.style.gridColumn = (t.x + 1) + ' / span ' + w;
       fig.style.gridRow = (t.y + 1) + ' / span ' + h;
       fig.style.setProperty('--ti', i);
-      fig.innerHTML = '<img src="' + imgs[i] + '" alt="理念配图 ' + (i + 1) + '" loading="lazy">';
+      fig.innerHTML = '<img src="' + imgs[i] + '" alt="理念配图 ' + (i + 1) + '" loading="lazy" decoding="async">';
       box.appendChild(fig);
     });
   }
@@ -339,7 +346,7 @@
     var box = document.getElementById('social-links');
     if (!box || !content || !content.social) return;
     var imgEl = document.querySelector('[data-cid="social.image"]');
-    if (imgEl && content.social.image) imgEl.src = content.social.image;
+    if (imgEl && content.social.image) { imgEl.src = content.social.image; imgEl.decoding = 'async'; }
     var links = content.social.links;
     if (!Array.isArray(links)) return;
     box.innerHTML = '';
