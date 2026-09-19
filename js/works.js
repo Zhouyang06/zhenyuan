@@ -87,6 +87,7 @@
         im.src = src;
         im.alt = '';
         im.loading = 'lazy';
+        im.decoding = 'async';
         track.appendChild(im);
       });
       mq.appendChild(track);
@@ -129,6 +130,7 @@
         t.className = 'wd-thumb' + (j === 0 ? ' cur' : '');
         t.src = src;
         t.alt = '';
+        t.decoding = 'async';
         t.dataset.j = j;
         t.addEventListener('click', function (e) {
           e.stopPropagation();
@@ -187,6 +189,7 @@
     if (!img) return;
     img.style.opacity = '0';
     setTimeout(function () {
+      img.decoding = 'async';
       img.onload = function () { img.style.opacity = '1'; };
       img.src = src;
       if (img.complete) img.style.opacity = '1';
