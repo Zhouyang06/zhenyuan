@@ -11,7 +11,7 @@
     "tagline": "True Aspiration for You"
   },
   "category": {
-    "image": "images/uploads/1788629138643-ProImage100-9.jpg"
+    "image": "images/uploads/1789832907541-mmexport1787399801516.jpg"
   },
   "showcase": {
     "image": "images/uploads/1788629132755-ProImage100-34.jpg"
@@ -25,7 +25,7 @@
       "images/uploads/1788613323187-ProImage100-4.jpg",
       "images/uploads/1788613823815-Kodak_5207-4.jpg",
       "images/uploads/1788613860849-Kodak_5207-15.jpg",
-      "images/uploads/1788614040153-5219-13.jpg"
+      "images/uploads/1789832680991-Premium400-25.jpg"
     ]
   },
   "studio": {
@@ -40,11 +40,10 @@
       "images/uploads/1788614172776-Ektar__1_-_1_-5.jpg",
       "images/uploads/1788614229435-000022.jpg",
       "images/uploads/1788614431812-Portra800__19_-_39_.jpg",
-      "images/uploads/1788614035664-5219-1.jpg",
-      "images/uploads/1788614072217-5219-27.jpg",
       "images/uploads/1788614293524-000002.jpg",
       "images/uploads/1788629132755-ProImage100-34.jpg",
-      "images/uploads/1788614432595-Portra800__24_-_39_.jpg"
+      "images/uploads/1789832797280-Premium400-25.jpg",
+      "images/uploads/1789832796900-Premium400-1.jpg"
     ]
   },
   "photo": {
@@ -232,6 +231,30 @@
           "images/uploads/1788614438235-Portra800__32_-_39_.jpg"
         ],
         "image": "images/uploads/1788614430795-Portra800__3_-_39_.jpg"
+      },
+      {
+        "cat": "film",
+        "film": "FujiFilm Superia Premium 400",
+        "camera": "",
+        "date": "2026.9",
+        "location": "湖南",
+        "note": "",
+        "images": [
+          "images/uploads/1789832796943-Premium400-3.jpg",
+          "images/uploads/1789832796900-Premium400-1.jpg",
+          "images/uploads/1789832796983-Premium400-5.jpg",
+          "images/uploads/1789832797045-Premium400-14.jpg",
+          "images/uploads/1789832797102-Premium400-15.jpg",
+          "images/uploads/1789832797605-Premium400-37.jpg",
+          "images/uploads/1789832797156-Premium400-16.jpg",
+          "images/uploads/1789832797220-Premium400-21.jpg",
+          "images/uploads/1789832797280-Premium400-25.jpg",
+          "images/uploads/1789832797350-Premium400-27.jpg",
+          "images/uploads/1789832797416-Premium400-31.jpg",
+          "images/uploads/1789832797500-Premium400-33.jpg",
+          "images/uploads/1789832797554-Premium400-34.jpg"
+        ],
+        "image": "images/uploads/1789832796943-Premium400-3.jpg"
       }
     ]
   },
