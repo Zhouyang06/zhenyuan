@@ -179,9 +179,10 @@
   /* ---------- 薄玻璃照片流：对角斜叠横跨整屏，鼠标左右滑动选择 ---------- */
   function enterStream(sets) {
     sets.forEach(normalize);
-    /* 预加载本批全部图片，避免切换/飞入时解码卡顿 */
+    /* 仅预加载每集封面图（卡片实际展示的就是 images[0]）；
+       某集被选中展开时 openLeaf 会再预加载该集其余图片，避免一进分类就 burst 下载全部大图 */
     sets.forEach(function (g) {
-      g.images.forEach(function (src) { var im = new Image(); im.src = src; });
+      if (g.images && g.images[0]) { var im = new Image(); im.decoding = 'async'; im.src = g.images[0]; }
     });
     stage.innerHTML = '';
     stage.classList.add('stream');
@@ -198,7 +199,7 @@
       var c = document.createElement('div');
       c.className = 'stream-card';
       /* sc-inner 包装层：入场动画作用在内层，不影响卡片的定位 transform/opacity */
-      c.innerHTML = '<div class="sc-inner"><img alt=""><span class="sc-glow"></span></div>';
+      c.innerHTML = '<div class="sc-inner"><img alt="" decoding="async"><span class="sc-glow"></span></div>';
       stage.appendChild(c);
       cards.push(c);
       cardImgs.push(c.querySelector('img'));
@@ -415,6 +416,7 @@
     /* 预加载并预解码该集全部图片：树叶飞入时图已就绪且已解码，不出白片、不掉帧 */
     g.images.forEach(function (p) {
       var im = new Image();
+      im.decoding = 'async';
       im.src = p;
       if (im.decode) im.decode().catch(function () {});
     });
@@ -446,7 +448,7 @@
     base.style.height = ch + 'px';
     base.style.zIndex = '2';
     base.style.opacity = '0';
-    base.innerHTML = '<img src="' + imgs[0] + '" alt="" style="width:100%;height:100%;object-fit:cover;display:block;">';
+    base.innerHTML = '<img src="' + imgs[0] + '" alt="" decoding="async" style="width:100%;height:100%;object-fit:cover;display:block;">';
     stage.appendChild(base);
 
     var leafEls = [];
@@ -458,7 +460,7 @@
         rp.style.aspectRatio = String(ratios[k2 % ratios.length]);
         rp.style.zIndex = String(30 + k2);
         rp.style.opacity = '0';
-        rp.innerHTML = '<img src="' + leaves[k2] + '" alt="" style="width:100%;height:100%;object-fit:cover;display:block;">';
+        rp.innerHTML = '<img src="' + leaves[k2] + '" alt="" decoding="async" style="width:100%;height:100%;object-fit:cover;display:block;">';
         stage.appendChild(rp);
 
         /* 从屏幕外四面八方连续飞入：全程运动不中断，仅末段轻微过冲后归位 */
@@ -529,7 +531,7 @@
 
     var banner = document.createElement('div');
     banner.className = 'wp-banner';
-    banner.innerHTML = '<img src="' + g.images[0] + '" alt="">';
+    banner.innerHTML = '<img src="' + g.images[0] + '" alt="" decoding="async">';
     canvas.appendChild(banner);
     /* 封面宽幅：浮起淡入 */
     banner.animate([
@@ -570,7 +572,7 @@
       var rowSpan = rowRnd < 0.16 ? 3 : (rowRnd < 0.5 ? 2 : 1);
       t.style.gridColumn = 'span ' + colSpan;
       t.style.gridRow = 'span ' + rowSpan;
-      t.innerHTML = '<img src="' + src + '" alt="" loading="lazy">';
+      t.innerHTML = '<img src="' + src + '" alt="" loading="lazy" decoding="async">';
       t.addEventListener('click', function () { openLightbox(g.images, i); });
       mosaic.appendChild(t);
       tiles.push(t);
@@ -626,7 +628,7 @@
     lb.innerHTML =
       '<button class="lb-x" type="button" aria-label="关闭">×</button>' +
       '<button class="lb-prev" type="button" aria-label="上一张">‹</button>' +
-      '<img class="lb-img" alt="">' +
+      '<img class="lb-img" alt="" decoding="async">' +
       '<button class="lb-next" type="button" aria-label="下一张">›</button>';
     document.body.appendChild(lightbox = lb);
 
@@ -724,7 +726,10 @@
       /* 分类页头图（"真愿"上方大图）：管理处可换（content.category.image） */
       if (c && c.category && c.category.image) {
         var hero = document.getElementById('cat-hero-img');
-        if (hero && hero.getAttribute('src') !== c.category.image) hero.src = c.category.image;
+        if (hero) {
+          hero.decoding = 'async';
+          if (hero.getAttribute('src') !== c.category.image) hero.src = c.category.image;
+        }
       }
     })
     .catch(function () { /* 静默使用默认 */ });
