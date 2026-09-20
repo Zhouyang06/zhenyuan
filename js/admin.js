@@ -9,8 +9,8 @@
   'use strict';
 
   /* ====== 配置 ====== */
-  // 管理密码的 SHA-256（十六进制）。当前默认密码：zhenyuan2026 —— 上线前请修改！
-  var PASSWORD_HASH = 'a607a4d7f3b063962461d0716988f0e84ed1d2e223b92da02fd8ebaa6f6d32bc';
+  // 管理密码的 SHA-256（十六进制）——不在此处写明文密码
+  var PASSWORD_HASH = 'ca1a8f86a5a3a99c51e2329e2480dbfd7e24d2f6503c279d3e904f3c0fbecd9d';
   var BRANCH = 'main';
   var CONTENT_PATH = 'content.json';
   var IS_LOCAL = location.hostname === '127.0.0.1' || location.hostname === 'localhost';
