@@ -10,15 +10,15 @@
   function init() {
     if (document.getElementById('zy-stats')) return;
 
-    /* 样式：极简、无描边无阴影，融入纯黑底 */
+    /* 样式：极简、无描边无阴影，适配站点白底（深灰墨色文字） */
     var css = document.createElement('style');
     css.textContent =
       '#zy-stats{text-align:center;padding:24px 16px 34px;' +
       'font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;' +
-      'font-size:11px;letter-spacing:.16em;color:rgba(248,245,255,.42);' +
+      'font-size:11px;letter-spacing:.16em;color:rgba(17,17,20,.5);' +
       'line-height:1.9;user-select:none;-webkit-user-select:none;}' +
-      '#zy-stats b{font-weight:400;color:rgba(248,245,255,.75);margin:0 .2em;font-variant-numeric:tabular-nums;}' +
-      '#zy-stats .zy-dot{margin:0 .9em;opacity:.5;}' +
+      '#zy-stats b{font-weight:500;color:rgba(17,17,20,.85);margin:0 .2em;font-variant-numeric:tabular-nums;}' +
+      '#zy-stats .zy-dot{margin:0 .9em;opacity:.45;}' +
       '@media(max-width:600px){#zy-stats{font-size:10px;letter-spacing:.1em;}}';
     document.head.appendChild(css);
 
