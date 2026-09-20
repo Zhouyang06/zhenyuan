@@ -50,7 +50,17 @@
     });
   }
   function setStatus(msg) { $('#status').textContent = msg; }
-  function getRepo() { return $('#gh-repo').value.trim(); }
+  /* 仓库规范化：容忍粘贴完整网址 / 带 .git / 空格 / 全角斜杠；留空则用本站默认仓库 */
+  function normalizeRepo(v) {
+    var s = String(v || '').trim();
+    s = s.replace(/^https?:\/\/(www\.)?github\.com\//i, '')
+         .replace(/\.git$/i, '')
+         .replace(/／/g, '/')
+         .replace(/\s+/g, '');
+    if (!s) s = 'Zhouyang06/zhenyuan';
+    return s;
+  }
+  function getRepo() { return normalizeRepo($('#gh-repo').value); }
   function getToken() { return $('#gh-token').value.trim(); }
   /* 本机接口密钥=管理密码哈希。该哈希本就硬编码在本文件、且接口只监听 127.0.0.1，
      故 sessionStorage 丢失时回退到常量，保证任何登录状态下本机保存/代理请求都不会被 403 拒绝。 */
@@ -206,9 +216,13 @@
   }
   async function publishAll() {
     var token = getToken(), repo = getRepo();
-    if (!token || !repo) {
+    if (!token) {
       $('#pub-setup').hidden = false;
-      throw new Error('一键发布需要仓库和 Token（在"发布设置"里填一次即可，本会话内记住）');
+      throw new Error('一键发布需要 Token（在"发布设置"里填一次即可，本会话内记住）');
+    }
+    if (!/^[\w.-]+\/[\w.-]+$/.test(repo)) {
+      $('#pub-setup').hidden = false;
+      throw new Error('仓库格式应为 用户名/仓库名，例如 Zhouyang06/zhenyuan');
     }
     /* 1. 整站代码文件（HTML/CSS/JS，小文件先传；内容未变 GitHub 自动跳过） */
     var codePushed = 0;
