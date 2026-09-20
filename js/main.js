@@ -5,7 +5,15 @@
   /* 每次进入/回到本页都显示在最顶部（含浏览器缓存恢复） */
   function goTop() { try { window.scrollTo(0, 0); } catch (e) {} }
   goTop();
-  window.addEventListener('pageshow', goTop);
+  window.addEventListener('pageshow', function (e) {
+    goTop();
+    /* bfcache 恢复时，首页可能残留 band-wipe 过渡层或 body.locked 类 */
+    if (e.persisted) {
+      document.querySelectorAll('.band-wipe').forEach(function (n) { n.remove(); });
+      document.body.classList.remove('locked');
+      document.body.classList.add('ready');
+    }
+  });
   window.addEventListener('load', goTop);
 
   async function loadContent() {
@@ -199,7 +207,7 @@
         requestAnimationFrame(function () {
           requestAnimationFrame(function () { ov.classList.add('grow'); });
         });
-        setTimeout(function () { location.href = bar.getAttribute('href'); }, 800); // 延长跳转时间确保动画完成
+        setTimeout(function () { location.href = bar.getAttribute('href'); }, 700); // 延长跳转时间确保动画完成
       });
     });
   }
