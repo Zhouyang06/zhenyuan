@@ -6,7 +6,7 @@
   <title>Sample Reels — ZhenYuan</title>
   <meta name="description" content="ZhenYuan 作品分类 — Film / Digital">
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="css/style.css?v=46">
+  <link rel="stylesheet" href="css/style.css?v=47">
 </head>
 <body>
 
@@ -80,6 +80,14 @@
       var t = titles[cat];
       document.title = t + ' — ZhenYuan';
 
+      // bfcache 恢复时清理残留过渡层
+      window.addEventListener('pageshow', function (e) {
+        if (e.persisted) {
+          var bo = document.getElementById('band-open');
+          if (bo) { bo.remove(); document.querySelectorAll('.sel-veil,.ring-stage,.peel-card,.ring-caption,#back-arrow').forEach(function(n){n.remove()}); }
+        }
+      });
+
       // 开场黑幕：显示所选横杠文字后上滑揭幕
       document.getElementById('cat-kicker').textContent = t;
       var open = document.getElementById('band-open');
@@ -87,7 +95,7 @@
       requestAnimationFrame(function () {
         requestAnimationFrame(function () { open.classList.add('away'); });
       });
-      setTimeout(function () { open.remove(); }, 1400);
+      setTimeout(function () { open.remove(); }, 800);
 
       // 文字可读性检测：大图偏暗时给"真愿zhenyuan"标题加光晕
       var heroImg = document.getElementById('cat-hero-img');
