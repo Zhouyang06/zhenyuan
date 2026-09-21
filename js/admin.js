@@ -349,13 +349,13 @@
     return new File([blob], file.name.replace(/\.(tiff?|TIFF?)$/, '') + '.jpg', { type: 'image/jpeg', lastModified: Date.now() });
   }
   window.__adminTiffTest = convertTiff;   // 测试钩子（与 intro.js __introTest 同一约定）
-  /* 缩略图生成：长边 1000、质量 72（与本地 make-thumbs.ps1 管线一致）。
+  /* 缩略图生成：长边 720、质量 60（与本地 make-thumbs.ps1 管线一致，手机弱网优先）。
      返回 null = 无需/无法生成（非 JPG 或解码失败），调用方跳过缩略图上传。 */
   async function makeThumb(file) {
     if ((file.type || '').toLowerCase() !== 'image/jpeg') return null;
     try {
       var bmp = await createImageBitmap(file);
-      var scale = Math.min(1, 1000 / Math.max(bmp.width, bmp.height));
+      var scale = Math.min(1, 720 / Math.max(bmp.width, bmp.height));
       var cv = document.createElement('canvas');
       cv.width = Math.max(1, Math.round(bmp.width * scale));
       cv.height = Math.max(1, Math.round(bmp.height * scale));
@@ -363,7 +363,7 @@
       ctx.imageSmoothingQuality = 'high';
       ctx.drawImage(bmp, 0, 0, cv.width, cv.height);
       if (bmp.close) bmp.close();
-      var blob = await new Promise(function (res) { cv.toBlob(res, 'image/jpeg', 0.72); });
+      var blob = await new Promise(function (res) { cv.toBlob(res, 'image/jpeg', 0.60); });
       if (!blob || blob.size >= file.size) return null;
       return new File([blob], file.name.replace(/\.[^.]+$/, '') + '.thumb.jpg', { type: 'image/jpeg', lastModified: Date.now() });
     } catch (e) { return null; }
