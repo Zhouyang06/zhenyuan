@@ -66,6 +66,12 @@
     return String(s == null ? '' : s)
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
+  /* 缩略图映射：uploads 大图 → 同名 .thumb.jpg（长边1000）；非 uploads 路径原样返回。
+     照片流卡片/预载用缩略图保证流畅；点选后作品集/banner/lightbox 仍用原图。 */
+  function thumbSrc(p) {
+    return (typeof p === 'string' && /^images\/uploads\/[^/]+\.(jpg|jpeg|png|webp)$/i.test(p))
+      ? p.replace(/\.(jpg|jpeg|png|webp)$/i, '.thumb.jpg') : p;
+  }
 
   /* ---------- 液态玻璃方块：从横条剥离 → 居中（纯玻璃，无图） ---------- */
   function startPeel(bar) {
@@ -182,7 +188,7 @@
     /* 仅预加载每集封面图（卡片实际展示的就是 images[0]）；
        某集被选中展开时 openLeaf 会再预加载该集其余图片，避免一进分类就 burst 下载全部大图 */
     sets.forEach(function (g) {
-      if (g.images && g.images[0]) { var im = new Image(); im.decoding = 'async'; im.src = g.images[0]; }
+      if (g.images && g.images[0]) { var im = new Image(); im.decoding = 'async'; im.src = thumbSrc(g.images[0]); }
     });
     stage.innerHTML = '';
     stage.classList.add('stream');
@@ -253,7 +259,7 @@
         var d = mod(pos + M / 2, M) - M / 2; /* 0=居中，>0 右上远去，<0 左下远去 */
         cardD[i2] = d;
         var sIdx = mod(Math.round(P + d), sets.length);
-        var src = sets[sIdx].images[0];
+        var src = thumbSrc(sets[sIdx].images[0]);
         var img = cardImgs[i2];
         if (L2.src !== src) { L2.src = src; img.src = src; }
         var x, y, z, sc, op;
