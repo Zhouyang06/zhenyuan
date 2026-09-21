@@ -388,7 +388,7 @@ body.portfolio-show main{display:none}
 .back-arrow.show{opacity:1;transform:none}
 .back-arrow:hover{background:var(--ink);color:#fff}
 /* 作品集画布：滚动式长页面（铺满 + 顶部留空 + 封面横幅 + 标签条） */
-.portfolio-canvas{position:fixed;left:0;right:0;top:0;bottom:0;z-index:380;
+.portfolio-canvas{position:fixed;left:0;right:0;top:0;bottom:0;z-index:435;
   background:#fff;overflow-y:auto;overflow-x:hidden;
   opacity:0;transition:opacity .7s ease;pointer-events:none}
 .portfolio-canvas.show{opacity:1;pointer-events:auto}
