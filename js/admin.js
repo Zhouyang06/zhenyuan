@@ -50,14 +50,20 @@
     });
   }
   function setStatus(msg) { $('#status').textContent = msg; }
-  /* 仓库规范化：容忍粘贴完整网址 / 带 .git / 空格 / 全角斜杠；留空则用本站默认仓库 */
+  /* 仓库规范化：容忍一切常见错误写法——完整网址（带/不带协议）、.git、空格、全角斜杠、
+     中文等非法字符、多余路径段、末尾斜杠、只写仓库名（自动补用户名）、留空（用本站仓库） */
   function normalizeRepo(v) {
     var s = String(v || '').trim();
-    s = s.replace(/^https?:\/\/(www\.)?github\.com\//i, '')
-         .replace(/\.git$/i, '')
+    s = s.replace(/^(https?:\/\/)?(www\.)?github\.com(?=\/|$)/i, '')
+         .replace(/\.git\b/i, '')
          .replace(/／/g, '/')
-         .replace(/\s+/g, '');
-    if (!s) s = 'Zhouyang06/zhenyuan';
+         .replace(/\s+/g, '')
+         .replace(/[^\w.\-/]/g, '');
+    var parts = s.split('/').filter(Boolean);
+    if (parts.length > 2) parts = parts.slice(0, 2);
+    s = parts.join('/');
+    if (!s) return 'Zhouyang06/zhenyuan';
+    if (s.indexOf('/') < 0) return 'Zhouyang06/' + s;
     return s;
   }
   function getRepo() { return normalizeRepo($('#gh-repo').value); }
@@ -216,6 +222,9 @@
   }
   async function publishAll() {
     var token = getToken(), repo = getRepo();
+    /* 把规范化结果写回输入框并按当前勾选持久化——自愈之前存下的错误仓库记忆 */
+    $('#gh-repo').value = repo;
+    try { saveCreds(); } catch (e) {}
     if (!token) {
       $('#pub-setup').hidden = false;
       throw new Error('一键发布需要 Token（在"发布设置"里填一次即可，本会话内记住）');
