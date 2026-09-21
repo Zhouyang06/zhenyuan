@@ -368,9 +368,48 @@
       return new File([blob], file.name.replace(/\.[^.]+$/, '') + '.thumb.jpg', { type: 'image/jpeg', lastModified: Date.now() });
     } catch (e) { return null; }
   }
+  /* 上传去重台账：处理后照片内容 SHA-256 → 已上传路径。
+     同一张照片再次选择时直接复用旧地址，不重传（发布差量同理防重复）。 */
+  function ledgerGet() {
+    try { return JSON.parse(localStorage.getItem('zy_upload_map') || '{}'); } catch (e) { return {}; }
+  }
+  function ledgerSet(hash, path) {
+    try {
+      var m = ledgerGet(); m[hash] = path;
+      localStorage.setItem('zy_upload_map', JSON.stringify(m));
+    } catch (e) {}
+  }
+  async function fileHashHex(file) {
+    var buf = await file.arrayBuffer();
+    var d = await crypto.subtle.digest('SHA-256', buf);
+    return Array.prototype.map.call(new Uint8Array(d), function (b) { return ('0' + b.toString(16)).slice(-2); }).join('');
+  }
+  /* 3路并发上传：多张照片总耗时约缩短至 1/3；结果顺序与选择顺序一致 */
+  async function uploadMany(files, onProgress) {
+    var paths = new Array(files.length), next = 0, done = 0;
+    async function worker() {
+      while (next < files.length) {
+        var i = next++;
+        paths[i] = await uploadOne(files[i]);
+        done++;
+        if (onProgress) onProgress(done, files.length);
+      }
+    }
+    var ws = [];
+    for (var w = 0; w < 3 && w < files.length; w++) ws.push(worker());
+    await Promise.all(ws);
+    return paths;
+  }
   async function uploadOne(file) {
     file = await convertTiff(file);
     file = await compressImage(file);
+    /* 内容去重：同一张照片（压缩后字节一致）上传过就直接复用旧地址 */
+    var hash = null;
+    try { if (window.crypto && crypto.subtle) hash = await fileHashHex(file); } catch (e) {}
+    if (hash) {
+      var seen = ledgerGet()[hash];
+      if (seen) return seen;
+    }
     var path = buildImagePath(file.name);
     /* 同步生成并上传缩略图（长边1000小图）：首页轮播/作品集全用小图保证流畅，点开大图才加载原图 */
     try {
@@ -400,6 +439,7 @@
         var j = await r.json().catch(function () { return {}; });
         throw new Error(j.error || ('HTTP ' + r.status));
       }
+      if (hash) ledgerSet(hash, path);
       return path;
     }
     var token = getToken(), repo = getRepo();
@@ -408,6 +448,7 @@
       throw new Error('部署到 GitHub Pages 后上传需要仓库和 Token，请在"发布设置"中填写');
     }
     await putFile(token, repo, path, b64, 'upload image: ' + path);
+    if (hash) ledgerSet(hash, path);
     return path;
   }
   /* 选择文件 → 逐张上传 → cb(路径数组) 回填 */
@@ -416,11 +457,9 @@
       var files = Array.from(fileInput.files || []);
       if (!files.length) return;
       try {
-        var paths = [];
-        for (var i = 0; i < files.length; i++) {
-          setStatus('正在上传图片…（' + (i + 1) + '/' + files.length + '）');
-          paths.push(await uploadOne(files[i]));
-        }
+        var paths = await uploadMany(files, function (d, n) {
+          setStatus('正在上传图片…（' + d + '/' + n + '）');
+        });
         cb(paths);
         setStatus('上传完成，点"保存并发布"后全站生效。');
       } catch (err) {
@@ -951,11 +990,9 @@
       if (!upFiles.length) { setStatus('请先拖入照片。'); return; }
       start.disabled = true;
       try {
-        var paths = [];
-        for (var i = 0; i < upFiles.length; i++) {
-          setStatus('正在上传…（' + (i + 1) + '/' + upFiles.length + '）');
-          paths.push(await uploadOne(upFiles[i]));
-        }
+        var paths = await uploadMany(upFiles, function (d, n) {
+          setStatus('正在上传…（' + d + '/' + n + '）');
+        });
         if (modeSel.value === 'merge') {
           var g = content.photo.gallery[parseInt(mergeSel.value, 10)];
           if (!g) throw new Error('请选择要并入的胶卷');
