@@ -285,10 +285,10 @@
   }
   if (typeof window !== "undefined") window.__philoLayout = solveSquare;  /* 测试钩子 */
 
-  /* 缩略图映射：uploads 大图 → 同名 .thumb.jpg（长边1000）；非 uploads 路径原样返回 */
+  /* 缩略图映射：uploads 大图 → 同名 .thumb.jpg（长边720）；非 uploads 路径/已是缩略图原样返回 */
   function thumbSrc(p) {
-    return (typeof p === 'string' && /^images\/uploads\/[^/]+\.(jpg|jpeg|png|webp)$/i.test(p))
-      ? p.replace(/\.(jpg|jpeg|png|webp)$/i, '.thumb.jpg') : p;
+    return (typeof p === 'string' && /^images\/uploads\/[^/]+\.(jpg|jpeg|png|webp)$/i.test(p) && !/\.thumb\.jpg/i.test(p))
+      ? p.replace(/\.(jpg|jpeg|png|webp)$/i, '.thumb.jpg?t=2') : p;
   }
 
   function initPhiloMosaic(content) {
