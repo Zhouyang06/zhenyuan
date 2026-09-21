@@ -349,10 +349,46 @@
     return new File([blob], file.name.replace(/\.(tiff?|TIFF?)$/, '') + '.jpg', { type: 'image/jpeg', lastModified: Date.now() });
   }
   window.__adminTiffTest = convertTiff;   // 测试钩子（与 intro.js __introTest 同一约定）
+  /* 缩略图生成：长边 1000、质量 72（与本地 make-thumbs.ps1 管线一致）。
+     返回 null = 无需/无法生成（非 JPG 或解码失败），调用方跳过缩略图上传。 */
+  async function makeThumb(file) {
+    if ((file.type || '').toLowerCase() !== 'image/jpeg') return null;
+    try {
+      var bmp = await createImageBitmap(file);
+      var scale = Math.min(1, 1000 / Math.max(bmp.width, bmp.height));
+      var cv = document.createElement('canvas');
+      cv.width = Math.max(1, Math.round(bmp.width * scale));
+      cv.height = Math.max(1, Math.round(bmp.height * scale));
+      var ctx = cv.getContext('2d');
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(bmp, 0, 0, cv.width, cv.height);
+      if (bmp.close) bmp.close();
+      var blob = await new Promise(function (res) { cv.toBlob(res, 'image/jpeg', 0.72); });
+      if (!blob || blob.size >= file.size) return null;
+      return new File([blob], file.name.replace(/\.[^.]+$/, '') + '.thumb.jpg', { type: 'image/jpeg', lastModified: Date.now() });
+    } catch (e) { return null; }
+  }
   async function uploadOne(file) {
     file = await convertTiff(file);
     file = await compressImage(file);
     var path = buildImagePath(file.name);
+    /* 同步生成并上传缩略图（长边1000小图）：首页轮播/作品集全用小图保证流畅，点开大图才加载原图 */
+    try {
+      var tf = await makeThumb(file);
+      if (tf) {
+        var tb = await fileToBase64(tf);
+        var tp = path.replace(/\.jpg$/i, '.thumb.jpg');
+        if (IS_LOCAL) {
+          await fetch('/api/upload', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-Admin-Key': adminKey() },
+            body: JSON.stringify({ path: tp, b64: tb })
+          });
+        } else if (getToken() && getRepo()) {
+          await putFile(getToken(), getRepo(), tp, tb, 'upload thumb: ' + tp);
+        }
+      }
+    } catch (e) { /* 缩略图失败不阻断主图上传 */ }
     var b64 = await fileToBase64(file);
     if (IS_LOCAL) {
       var r = await fetch('/api/upload', {
