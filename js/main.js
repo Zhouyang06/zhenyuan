@@ -103,7 +103,7 @@
       var d = document.createElement('div');
       d.className = 'cf-item';
       var img = document.createElement('img');
-      img.setAttribute('data-src', src);   /* 按需加载：layout 时只给当前及相邻卡设 src，避免首屏拉全部图 */
+      img.setAttribute('data-src', thumbSrc(src));   /* 按需加载：layout 时只给当前及相邻卡设 src；用缩略图，点进作品页才看原图 */
       img.decoding = 'async';
       img.alt = '';
       d.appendChild(img);
@@ -285,6 +285,12 @@
   }
   if (typeof window !== "undefined") window.__philoLayout = solveSquare;  /* 测试钩子 */
 
+  /* 缩略图映射：uploads 大图 → 同名 .thumb.jpg（长边1000）；非 uploads 路径原样返回 */
+  function thumbSrc(p) {
+    return (typeof p === 'string' && /^images\/uploads\/[^/]+\.(jpg|jpeg|png|webp)$/i.test(p))
+      ? p.replace(/\.(jpg|jpeg|png|webp)$/i, '.thumb.jpg') : p;
+  }
+
   function initPhiloMosaic(content) {
     var box = document.getElementById('philo-imgs');
     if (!box) return;
@@ -313,7 +319,7 @@
       fig.style.gridColumn = (t.x + 1) + ' / span ' + w;
       fig.style.gridRow = (t.y + 1) + ' / span ' + h;
       fig.style.setProperty('--ti', i);
-      fig.innerHTML = '<img src="' + imgs[i] + '" alt="理念配图 ' + (i + 1) + '" loading="lazy" decoding="async">';
+      fig.innerHTML = '<img src="' + thumbSrc(imgs[i]) + '" alt="理念配图 ' + (i + 1) + '" loading="lazy" decoding="async">';
       box.appendChild(fig);
     });
   }
