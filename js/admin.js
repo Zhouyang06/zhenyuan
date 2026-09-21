@@ -194,7 +194,9 @@
       throw e;
     }
   }
-  /* GitHub 上 images/uploads/ 已有文件名集合（404 = 目录还没建 → 全部待传）。本机走本地代理，热点抖动自动重试。 */
+  /* GitHub 上 images/uploads/ 已有文件表（文件名 → 字节大小；404 = 目录还没建 → 全部待传）。
+     带大小是为了检测"同名但已重压缩/变小"的文件——体积对不上就强制覆盖重传。
+     本机走本地代理，热点抖动自动重试。 */
   async function ghUploadedNames(token, repo) {
     if (IS_LOCAL) {
       var lr = await fetchRetry('/api/gh-list', {
@@ -204,9 +206,9 @@
       });
       var lj = await lr.json();
       if (!lj.ok) throw new Error(lj.error || lj.message || ('HTTP ' + (lj.status || '未知')));
-      var lset = {};
-      (lj.names || []).forEach(function (n) { lset[n] = 1; });
-      return lset;
+      var lmap = {};
+      (lj.names || []).forEach(function (n) { lmap[n] = (lj.sizes && typeof lj.sizes[n] === 'number') ? lj.sizes[n] : -1; });
+      return lmap;
     }
     var r = await fetchRetry('https://api.github.com/repos/' + repo + '/contents/images/uploads?ref=' + BRANCH,
       { headers: apiHeaders(token) });
@@ -216,9 +218,9 @@
       throw new Error(j.message || ('HTTP ' + r.status));
     }
     var arr = await r.json();
-    var set = {};
-    (Array.isArray(arr) ? arr : []).forEach(function (it) { if (it.type === 'file') set[it.name] = 1; });
-    return set;
+    var map = {};
+    (Array.isArray(arr) ? arr : []).forEach(function (it) { if (it.type === 'file') map[it.name] = it.size; });
+    return map;
   }
   async function publishAll() {
     var token = getToken(), repo = getRepo();
@@ -248,11 +250,18 @@
       body: '{}'
     });
     if (!lr.ok) throw new Error('读取本机上传清单失败：HTTP ' + lr.status);
-    var localFiles = ((await lr.json()).files) || [];
-    /* 3. 对照 GitHub 已有文件 → 差量（重名跳过，不重复传） */
+    var lj = await lr.json();
+    var localFiles = lj.files || [];
+    var localSizes = lj.sizes || {};
+    /* 3. 对照 GitHub 已有文件 → 差量（缺失上传；同名但体积不同=已重压缩 → 强制覆盖） */
     setStatus('正在核对 GitHub 已有文件…');
     var have = await ghUploadedNames(token, repo);
-    var todo = localFiles.filter(function (p) { return !have[p.split('/').pop()]; });
+    var todo = localFiles.filter(function (p) {
+      var base = p.split('/').pop();
+      if (have[base] === undefined) return true;
+      var sz = localSizes[base];
+      return (typeof sz === 'number' && have[base] >= 0 && have[base] !== sz);
+    });
     /* 4. 逐张补传（失败不中断，最后汇总；再点一次可续传） */
     var fail = 0;
     for (var i = 0; i < todo.length; i++) {
