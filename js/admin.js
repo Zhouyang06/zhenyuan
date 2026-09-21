@@ -170,7 +170,8 @@
     'index.html', 'menu.html', 'works.html', 'social.html', 'category.html', 'admin.html',
     'css/style.css', 'css/admin.css',
     'js/main.js', 'js/works.js', 'js/category.js', 'js/admin.js', 'js/utif.js',
-    'js/fuzzy-text.js', 'js/intro.js', 'js/prism.js', 'js/dither.js', 'js/gradual-blur.js', 'js/counter.js'
+    'js/fuzzy-text.js', 'js/intro.js', 'js/prism.js', 'js/dither.js', 'js/gradual-blur.js', 'js/counter.js',
+    'images/cat-hero-light.jpg', 'images/photo.jpg', 'images/philo1.jpg', 'images/philo2.jpg', 'images/philo3.jpg', 'images/showcase.jpg'
   ];
   /* 读本机文件 → base64 */
   async function fetchLocalB64(path) {
