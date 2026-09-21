@@ -423,13 +423,18 @@
       ], { duration: 620, easing: 'cubic-bezier(.45,0,.7,.45)', fill: 'forwards' });
     });
 
-    /* 预加载并预解码该集全部图片（缩略图）：树叶飞入时图已就绪且已解码，不出白片、不掉帧 */
+    /* 预加载并预解码该集全部图片（缩略图）：树叶飞入时图已就绪且已解码，不出白片、不掉帧。
+       同时预载封面原图：作品集画布 banner 用高清图，画布淡入时已就绪不空白 */
     g.images.forEach(function (p) {
       var im = new Image();
       im.decoding = 'async';
       im.src = thumbSrc(p);
       if (im.decode) im.decode().catch(function () {});
     });
+    var bannerIm = new Image();
+    bannerIm.decoding = 'async';
+    bannerIm.src = g.images[0];
+    if (bannerIm.decode) bannerIm.decode().catch(function () {});
 
     /* 选中卡：平滑滑行到屏幕中央。保持原尺寸不变（不改宽高/比例，杜绝重排卡顿） */
     /* 与照片流 frame() 完全相同的尺寸公式——淡接底图与玻璃卡严丝合缝 */
@@ -525,8 +530,8 @@
   /* ---------- 作品集长页面：宽幅封面 + 标签条 + 随机密铺 ---------- */
   function showPortfolio(g) {
     goTop();
-    stage.innerHTML = '';
-    stage.classList.remove('stream', 'grabbing');
+    /* 不再瞬间清空照片流：作品集画布（z-index 高于照片流）淡入覆盖，~0.8s 后再后台清理——
+       树叶动画结尾与画布淡入交叉，消除黑闪/断裂感 */
     caption.classList.remove('on');
     veil.classList.remove('on');
 
@@ -582,7 +587,7 @@
       var rowSpan = rowRnd < 0.16 ? 3 : (rowRnd < 0.5 ? 2 : 1);
       t.style.gridColumn = 'span ' + colSpan;
       t.style.gridRow = 'span ' + rowSpan;
-      t.innerHTML = '<img src="' + thumbSrc(src) + '" alt="" loading="lazy" decoding="async">';
+      t.innerHTML = '<img src="' + src + '" alt="" loading="lazy" decoding="async">';
       t.addEventListener('click', function () { openLightbox(g.images, i); });
       mosaic.appendChild(t);
       tiles.push(t);
@@ -627,6 +632,11 @@
     canvas._lightFn = lightFn;
 
     canvas.scrollTop = 0;
+    /* 照片流已被画布盖住：延迟后台清理（淡入完成后再移除 DOM，期间无任何可见跳变） */
+    setTimeout(function () {
+      stage.innerHTML = '';
+      stage.classList.remove('stream', 'grabbing');
+    }, 820);
     busy = false;
   }
 
