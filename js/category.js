@@ -419,11 +419,11 @@
       ], { duration: 620, easing: 'cubic-bezier(.45,0,.7,.45)', fill: 'forwards' });
     });
 
-    /* 预加载并预解码该集全部图片：树叶飞入时图已就绪且已解码，不出白片、不掉帧 */
+    /* 预加载并预解码该集全部图片（缩略图）：树叶飞入时图已就绪且已解码，不出白片、不掉帧 */
     g.images.forEach(function (p) {
       var im = new Image();
       im.decoding = 'async';
-      im.src = p;
+      im.src = thumbSrc(p);
       if (im.decode) im.decode().catch(function () {});
     });
 
@@ -454,7 +454,7 @@
     base.style.height = ch + 'px';
     base.style.zIndex = '2';
     base.style.opacity = '0';
-    base.innerHTML = '<img src="' + imgs[0] + '" alt="" decoding="async" style="width:100%;height:100%;object-fit:cover;display:block;">';
+    base.innerHTML = '<img src="' + thumbSrc(imgs[0]) + '" alt="" decoding="async" style="width:100%;height:100%;object-fit:cover;display:block;">';
     stage.appendChild(base);
 
     var leafEls = [];
@@ -466,7 +466,7 @@
         rp.style.aspectRatio = String(ratios[k2 % ratios.length]);
         rp.style.zIndex = String(30 + k2);
         rp.style.opacity = '0';
-        rp.innerHTML = '<img src="' + leaves[k2] + '" alt="" decoding="async" style="width:100%;height:100%;object-fit:cover;display:block;">';
+        rp.innerHTML = '<img src="' + thumbSrc(leaves[k2]) + '" alt="" decoding="async" style="width:100%;height:100%;object-fit:cover;display:block;">';
         stage.appendChild(rp);
 
         /* 从屏幕外四面八方连续飞入：全程运动不中断，仅末段轻微过冲后归位 */
@@ -578,7 +578,7 @@
       var rowSpan = rowRnd < 0.16 ? 3 : (rowRnd < 0.5 ? 2 : 1);
       t.style.gridColumn = 'span ' + colSpan;
       t.style.gridRow = 'span ' + rowSpan;
-      t.innerHTML = '<img src="' + src + '" alt="" loading="lazy" decoding="async">';
+      t.innerHTML = '<img src="' + thumbSrc(src) + '" alt="" loading="lazy" decoding="async">';
       t.addEventListener('click', function () { openLightbox(g.images, i); });
       mosaic.appendChild(t);
       tiles.push(t);
