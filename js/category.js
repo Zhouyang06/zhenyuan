@@ -66,11 +66,11 @@
     return String(s == null ? '' : s)
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
-  /* 缩略图映射：uploads 大图 → 同名 .thumb.jpg（长边1000）；非 uploads 路径原样返回。
-     照片流卡片/预载用缩略图保证流畅；点选后作品集/banner/lightbox 仍用原图。 */
+  /* 缩略图映射：uploads 大图 → 同名 .thumb.jpg（长边720）；非 uploads 路径/已是缩略图原样返回。
+     照片流卡片/预载用缩略图保证流畅；点选后作品集 banner/lightbox 仍用原图。 */
   function thumbSrc(p) {
-    return (typeof p === 'string' && /^images\/uploads\/[^/]+\.(jpg|jpeg|png|webp)$/i.test(p))
-      ? p.replace(/\.(jpg|jpeg|png|webp)$/i, '.thumb.jpg') : p;
+    return (typeof p === 'string' && /^images\/uploads\/[^/]+\.(jpg|jpeg|png|webp)$/i.test(p) && !/\.thumb\.jpg/i.test(p))
+      ? p.replace(/\.(jpg|jpeg|png|webp)$/i, '.thumb.jpg?t=2') : p;
   }
 
   /* ---------- 液态玻璃方块：从横条剥离 → 居中（纯玻璃，无图） ---------- */
@@ -185,11 +185,11 @@
   /* ---------- 薄玻璃照片流：对角斜叠横跨整屏，鼠标左右滑动选择 ---------- */
   function enterStream(sets) {
     sets.forEach(normalize);
-    /* 仅预加载每集封面图（卡片实际展示的就是 images[0]）；
-       某集被选中展开时 openLeaf 会再预加载该集其余图片，避免一进分类就 burst 下载全部大图 */
-    sets.forEach(function (g) {
-      if (g.images && g.images[0]) { var im = new Image(); im.decoding = 'async'; im.src = thumbSrc(g.images[0]); }
-    });
+    /* 只预载前 6 集封面（=初始照片流可见窗口：中央1张+身后摞5张），
+       不再一进分类就 burst 下载全部封面；其余集随翻动到可见位置时由 frame() 按需加载 */
+    for (var pi = 0; pi < Math.min(6, sets.length); pi++) {
+      if (sets[pi].images && sets[pi].images[0]) { var im = new Image(); im.decoding = 'async'; im.src = thumbSrc(sets[pi].images[0]); }
+    }
     stage.innerHTML = '';
     stage.classList.add('stream');
     goTop();   /* 进入照片流时回到页面顶部，避免固定卡片被滚动位遮挡 */
@@ -261,7 +261,11 @@
         var sIdx = mod(Math.round(P + d), sets.length);
         var src = thumbSrc(sets[sIdx].images[0]);
         var img = cardImgs[i2];
-        if (L2.src !== src) { L2.src = src; img.src = src; }
+        /* 按需加载：只给可见卡片（滑落侧近距 或 摞深5以内）设 src。
+           屏幕外/深摞卡片首次不请求，翻动进入可见窗口时才加载——进页面瞬间并发请求从 30+ 降到 6。
+           已加载的卡片保留 src（L2.src 非空不清空），翻回来命中缓存不重下。 */
+        var loadWindow = (d < 0 && d > -1.2) || (d >= 0 && d <= 5);
+        if (loadWindow && L2.src !== src) { L2.src = src; img.src = src; }
         var x, y, z, sc, op;
         var ad = Math.abs(d);
         var isCenter = ad < 0.5;
